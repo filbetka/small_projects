@@ -35,7 +35,7 @@ function Server()
             {
                 callback(data[address]);
             },
-            3000
+            1000
         )
     }
 
