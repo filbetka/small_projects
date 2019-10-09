@@ -4,7 +4,7 @@ function View_Manager()
     let content = document.getElementById('content');
 
     // methods
-    function update_product_page(data)
+    function set_product_page(data)
     {
         let html = '';
         data.products.forEach(
@@ -21,7 +21,7 @@ function View_Manager()
         content.innerHTML = html;
     }
 
-    function update_main_page(data)
+    function set_main_page(data)
     {
         let html = '';
         html += '<h1>' + data.title + '</h1>';
@@ -29,9 +29,21 @@ function View_Manager()
         content.innerHTML = html;
     }
 
+    function set_contact_page(data)
+    {
+        let html = '';
+        html += '<h1>' + data.title + '</h1>';
+        html += '<p>' + data.address + '</p>';
+        html += '<p>' + data.postal_code + '</p>';
+        html += '<p>' + data.city + '</p>';
+        html += '<p>' + data.country + '</p>';
+        content.innerHTML = html;
+    }
+
     // public methods
     return {
-        update_product_page: update_product_page,
-        update_main_page: update_main_page
+        set_product_page: set_product_page,
+        set_main_page: set_main_page,
+        set_contact_page: set_contact_page,
     }
 }

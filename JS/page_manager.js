@@ -5,8 +5,9 @@ function Page_Manager()
 
     // site pages
     let pages = {
+        'main': requests.main_page,
         'products': requests.product_page,
-        'main': requests.main_page
+        'contact': requests.contact_page,
     };
 
     // methods
