@@ -23,7 +23,15 @@ function Server()
         'main_page': {
             title: 'Your the best shop ever!',
             description: 'Oh..'
-        }
+        },
+
+        'contact_page': {
+            title: 'Our company is located in Gdynia',
+            address: 'Zamenhofa 3/54',
+            postal_code: '81-218',
+            city: 'Gdynia',
+            country: 'Poland'
+        },
 
     };
 
@@ -40,6 +48,6 @@ function Server()
     }
 
     return {
-        request: request
+        request: request,
     };
 }

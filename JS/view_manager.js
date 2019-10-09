@@ -7,13 +7,16 @@ function View_Manager()
     function update_product_page(data)
     {
         let html = '';
-        data.products.forEach(function (element) {
-            let product =
-                '<h3>' + element.name + '</h3>' +
-                '<p>' + element.description + '</p>';
+        data.products.forEach(
+            function (element)
+            {
+                let product =
+                    '<h3>' + element.name + '</h3>' +
+                    '<p>' + element.description + '</p>';
 
-            html += '<div>' + product + '</div>'
-        });
+                html += '<div>' + product + '</div>'
+            }
+        );
 
         content.innerHTML = html;
     }
