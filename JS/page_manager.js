@@ -5,14 +5,21 @@ function Page_Manager()
 
     // site pages
     let pages = {
-        'products_page': requests.product_page,
-        'main_page': requests.main_page
+        'products': requests.product_page,
+        'main': requests.main_page
     };
 
     // methods
-    function change_address(event) {
-        console.log(event.target.id);
+    function change_address(event)
+    {
+        console.log('Page_Manager.change_address: ' + event.target.id);
         pages[event.target.id]();
+    }
+
+    function load_page(page)
+    {
+        console.log('Page_Manager.load_page: ' + page);
+        pages[page]();
     }
 
     // set event listener
@@ -20,6 +27,6 @@ function Page_Manager()
 
     // public methods
     return {
-        //
+        load_page: load_page
     }
 }

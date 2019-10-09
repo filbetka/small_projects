@@ -1,10 +1,11 @@
 function View_Manager()
 {
+    // fields
+    let content = document.getElementById('content');
+
     // methods
     function update_product_page(data)
     {
-        console.log(data);
-
         let html = '';
         data.products.forEach(function (element) {
             let product =
@@ -14,17 +15,15 @@ function View_Manager()
             html += '<div>' + product + '</div>'
         });
 
-        document.getElementById('json').innerHTML = html;
+        content.innerHTML = html;
     }
 
     function update_main_page(data)
     {
-        console.log(data);
-
         let html = '';
         html += '<h1>' + data.title + '</h1>';
         html += '<p>' + data.description + '</p>';
-        document.getElementById('json').innerHTML = html;
+        content.innerHTML = html;
     }
 
     // public methods
