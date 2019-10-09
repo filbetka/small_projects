@@ -1,3 +1,28 @@
+
+let server = Server();
+let pages = {
+    'products_page': request_product_page,
+    'main_page': request_main_page
+};
+
+function change_address(event)
+{
+    console.log(event.target.id);
+    pages[event.target.id]();
+}
+
+// requests
+function request_product_page()
+{
+    server.request(update_product_page, 'products_page');
+}
+
+function request_main_page()
+{
+    server.request(update_main_page, 'main_page');
+}
+
+// updates
 function update_product_page(data)
 {
     console.log(data);
@@ -25,6 +50,5 @@ function update_main_page(data)
     document.getElementById('json').innerHTML = html;
 }
 
-let server = Server();
-server.request(update_product_page, 'products_page');
-//server.request(update_main_page, 'main_page');
+
+document.addEventListener("click", change_address);
