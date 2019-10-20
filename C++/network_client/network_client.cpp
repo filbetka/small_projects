@@ -48,7 +48,7 @@ bool Network_Client::Connection_Open()
     if (client_socket < 0)
     {
         cout << "Network_Client::Connection_Open: "
-                "create socket error";
+                "create socket error\n";
 
         return false;
     }
@@ -67,7 +67,7 @@ bool Network_Client::Connection_Open()
     if (status < 0)
     {
         cout << "Network_Client::Connection_Open: "
-                "error set keep alive";
+                "error set keep alive\n";
 
         close(client_socket);
         return false;
@@ -88,7 +88,8 @@ bool Network_Client::Connection_Open()
     if (status <= 0)
     {
         cout << "Network_Client::Connection_Open: "
-                "invalid address or address not supported";
+                "invalid address or address "
+                "not supported\n";
 
         return false;
     }
@@ -102,7 +103,7 @@ bool Network_Client::Connection_Open()
     if (status < 0)
     {
         cout << "Network_Client::Connection_Open: "
-                "Connection failed";
+                "Connection failed\n";
 
         return false;
     }
@@ -144,7 +145,7 @@ void Network_Client::Write(string data)
     if (status < 0)
     {
         cout << "Network_Client::Write: "
-                "Connection error";
+                "Connection error\n";
 
         this->Connection_Close();
     }
@@ -179,7 +180,7 @@ string Network_Client::Read()
     if (status < 0)
     {
         cout << strerror(errno);
-        cout << "Network_Client::Read: select error";
+        cout << "Network_Client::Read: select error\n";
         return "";
     }
 
@@ -190,7 +191,7 @@ string Network_Client::Read()
     // set select error
     if (not FD_ISSET(socket_fd, &read_set))
     {
-        cout << "Network_Client::Read: select error";
+        cout << "Network_Client::Read: select error\n";
         return "";
     }
 
@@ -202,7 +203,7 @@ string Network_Client::Read()
     if (status < 0)
     {
         cout << strerror(errno);
-        cout << "Network_Client::Read: read string";
+        cout << "Network_Client::Read: read string\n";
         return "";
     }
 
@@ -231,7 +232,7 @@ void Network_Client::Write(char* data, size_t size)
     if (status < 0)
     {
         cout << "Network_Client::Write: "
-                "Connection error";
+                "Connection error\n";
 
         this->Connection_Close();
     }
@@ -251,7 +252,7 @@ void Network_Client::Read(char* buffer, size_t size)
     if (status < 0)
     {
         cout << "Wifi_Client::Read: "
-                "Connection error";
+                "Connection error\n";
 
         this->Connection_Close();
     }
