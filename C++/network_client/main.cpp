@@ -26,11 +26,12 @@ int main()
     {
         string data = "Hello";
 
-        cout << "write: ";
+        cout << "write: " << data << "\t";
         client.Write(data);
 
         cout << "read: ";
         cout << client.Read();
+        cout << endl;
     }
 
     return 0;

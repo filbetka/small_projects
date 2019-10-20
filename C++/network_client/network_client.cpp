@@ -47,7 +47,7 @@ bool Network_Client::Connection_Open()
 
     if (client_socket < 0)
     {
-        cout << "Network_Client::Connection_Open: "
+        cerr << "Network_Client::Connection_Open: "
                 "create socket error\n";
 
         return false;
@@ -66,7 +66,7 @@ bool Network_Client::Connection_Open()
 
     if (status < 0)
     {
-        cout << "Network_Client::Connection_Open: "
+        cerr << "Network_Client::Connection_Open: "
                 "error set keep alive\n";
 
         close(client_socket);
@@ -87,7 +87,7 @@ bool Network_Client::Connection_Open()
 
     if (status <= 0)
     {
-        cout << "Network_Client::Connection_Open: "
+        cerr << "Network_Client::Connection_Open: "
                 "invalid address or address "
                 "not supported\n";
 
@@ -102,7 +102,7 @@ bool Network_Client::Connection_Open()
 
     if (status < 0)
     {
-        cout << "Network_Client::Connection_Open: "
+        cerr << "Network_Client::Connection_Open: "
                 "Connection failed\n";
 
         return false;
@@ -144,7 +144,7 @@ void Network_Client::Write(string data)
     // write error
     if (status < 0)
     {
-        cout << "Network_Client::Write: "
+        cerr << "Network_Client::Write: "
                 "Connection error\n";
 
         this->Connection_Close();
@@ -179,8 +179,8 @@ string Network_Client::Read()
 
     if (status < 0)
     {
-        cout << strerror(errno);
-        cout << "Network_Client::Read: select error\n";
+        cerr << strerror(errno);
+        cerr << "Network_Client::Read: select error\n";
         return "";
     }
 
@@ -188,12 +188,9 @@ string Network_Client::Read()
     if (status == 0)
         usleep(10000);
 
-    // set select error
+    // no red data
     if (not FD_ISSET(socket_fd, &read_set))
-    {
-        cout << "Network_Client::Read: select error\n";
         return "";
-    }
 
     // read data
     char buffer[4096] = {0};
@@ -202,8 +199,8 @@ string Network_Client::Read()
     // read error
     if (status < 0)
     {
-        cout << strerror(errno);
-        cout << "Network_Client::Read: read string\n";
+        cerr << strerror(errno);
+        cerr << "Network_Client::Read: read string\n";
         return "";
     }
 
@@ -231,7 +228,7 @@ void Network_Client::Write(char* data, size_t size)
     // write error
     if (status < 0)
     {
-        cout << "Network_Client::Write: "
+        cerr << "Network_Client::Write: "
                 "Connection error\n";
 
         this->Connection_Close();
@@ -251,7 +248,7 @@ void Network_Client::Read(char* buffer, size_t size)
     // check if error
     if (status < 0)
     {
-        cout << "Wifi_Client::Read: "
+        cerr << "Wifi_Client::Read: "
                 "Connection error\n";
 
         this->Connection_Close();
