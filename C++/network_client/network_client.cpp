@@ -30,6 +30,12 @@ Network_Client::Network_Client(string address, int port)
     client_socket = -1;
 }
 
+Network_Client::~Network_Client()
+{
+    if (this->Is_Open())
+        this->Connection_Close();
+}
+
 /**
  * @brief Network_Client::Connection_Open
  * @return if connection has been opened

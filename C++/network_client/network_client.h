@@ -10,6 +10,7 @@ class Network_Client : public Abstract_Medium
     public:
 
         Network_Client(string address, int port);
+        ~Network_Client();
 
     private:
 
