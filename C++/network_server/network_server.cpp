@@ -51,7 +51,7 @@ bool Network_Server::Connection_Open()
     if (server_socket < 0)
     {
         cerr << "Network_Server::Connection_Open: "
-                "cannot create socket";
+                "cannot create socket\n";
 
         return false;
     }
@@ -81,7 +81,7 @@ bool Network_Server::Connection_Open()
         if (status < 0)
         {
             cerr << "Network_Server::Connection_Open: "
-                    "error bind failed";
+                    "error bind failed\n";
 
             close(server_socket);
             return false;
@@ -100,7 +100,7 @@ bool Network_Server::Connection_Open()
     if (status < 0)
     {
         cerr << "Network_Server::Connection_Open: "
-                "error set keep alive";
+                "error set keep alive\n";
 
         close(server_socket);
         return false;
@@ -114,7 +114,7 @@ bool Network_Server::Connection_Open()
     if (status < 0)
     {
         cerr << "Network_Server::Connection_Open: "
-                "error listen failed";
+                "error listen failed\n";
 
         close(server_socket);
         return false;
@@ -131,23 +131,14 @@ bool Network_Server::Connection_Open()
 
 void Network_Server::Connection_Close()
 {
-    if (this->Is_Connected())
-    {
-        // send finish connection signal to client
-        if (shutdown(server_connect, SHUT_RDWR) < 0)
-            cerr << "Network_Server::Connection_Close: "
-                    "cannot shutdown socket";
-
-        // close connection
-        close(server_connect);
-    }
-
-    // change status
-    is_connected = false;
-    is_open = false;
+    this->Disconnect();
 
     // close socket
-    close(server_socket);
+    if (this->Is_Open())
+    {
+        is_open = false;
+        close(server_socket);
+    }
 }
 
 /**
@@ -170,7 +161,7 @@ void Network_Server::Connection_Accept()
     if (new_connect < 0)
     {
         cerr << "Network_Server::Connection_Accept: "
-                "Accept failed";
+                "Accept failed\n";
 
         close(new_connect);
         return;
@@ -196,12 +187,17 @@ void Network_Server::Connection_Accept()
 
 void Network_Server::Disconnect()
 {
-    // send finish connection signal to client
-    if (shutdown(server_connect, SHUT_RDWR) < 0)
-        cerr << "Network_Server::Connection_Close: "
-                "cannot shutdown socket";
+    if (this->Is_Connected())
+    {
+        // send finish connection signal to client
+        if (shutdown(server_connect, SHUT_RDWR) < 0)
+            cerr << "Network_Server::Disconnect: "
+                    "cannot shutdown socket\n";
 
-    close(server_connect);
+        // close connection
+        close(server_connect);
+    }
+
     is_connected = false;
 }
 
@@ -216,16 +212,18 @@ void Network_Server::Write(string data)
     int status = 0;
 
     // send text
-    status = write(
+    status = send(
         server_connect,
         data.c_str(),
-        data.length());
+        data.length(),
+        MSG_NOSIGNAL);
 
     // check if error
     if (status < 0)
     {
+        this->Disconnect();
         cerr << "Network_Server::Write: "
-                "connection error";
+                "connection error\n";
     }
 }
 
@@ -262,8 +260,8 @@ string Network_Server::Read()
 
     if (status < 0)
     {
-        cerr << "Network_Server::Read: select error";
-        cerr << strerror(errno);
+        cerr << "Network_Server::Read: select error\n";
+        cerr << strerror(errno) << endl;
         return "";
     }
 
@@ -280,8 +278,8 @@ string Network_Server::Read()
     // check if error
     if (status < 0)
     {
-        cerr << "Network_Server::Read: read string";
-        cerr << strerror(errno);
+        cerr << "Network_Server::Read: read string\n";
+        cerr << strerror(errno) << endl;
         return "";
     }
 
@@ -301,16 +299,17 @@ void Network_Server::Write(char* data, size_t size)
     int status = 0;
 
     // send text
-    status = write(
+    status = send(
         server_connect,
-        data,
-        size);
+        data, size,
+        MSG_NOSIGNAL);
 
     // check if error
     if (status < 0)
     {
+        this->Disconnect();
         cerr << "Network_Server::Write: "
-                "connection error";
+                "connection error\n";
     }
 }
 
@@ -334,7 +333,7 @@ void Network_Server::Read(char* buffer, size_t size)
     if (status < 0)
     {
         cerr << "Network_Server::Read: "
-                "connection error";
+                "connection error\n";
     }
 }
 
