@@ -142,10 +142,11 @@ void Network_Client::Write(string data)
     int status = 0;
 
     // send text
-    status = write(
+    status = send(
         client_socket,
         data.c_str(),
-        data.length());
+        data.length(),
+        MSG_NOSIGNAL);
 
     // write error
     if (status < 0)
@@ -226,10 +227,10 @@ void Network_Client::Write(char* data, size_t size)
     int status = 0;
 
     // send text
-    status = write(
+    status = send(
         client_socket,
-        data,
-        size);
+        data, size,
+        MSG_NOSIGNAL);
 
     // write error
     if (status < 0)
