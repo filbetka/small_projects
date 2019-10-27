@@ -17,19 +17,22 @@ class Network_Client : public Abstract_Medium
         string client_address;
         int client_port;
         int client_socket;
+        int read_timeout_ms;
 
     public:
 
         // connection
-        bool Connection_Open() override;
-        void Connection_Close() override;
+        bool Connection_Open() final;
+        void Connection_Close() final;
 
         // read and write
-        void Write(string data);
-        string Read();
+        void Write(string data) final;
+        string Read() final;
 
-        void Write(char* data, size_t size);
-        void Read(char* buffer, size_t size);
+        void Write(char* data, size_t size) final;
+        void Read(char* buffer, size_t size) final;
+
+        void Set_Read_Timeout(int timeout_ms);
 
 };
 

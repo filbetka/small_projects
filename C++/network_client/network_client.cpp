@@ -28,6 +28,7 @@ Network_Client::Network_Client(string address, int port)
     client_address = move(address);
     client_port = port;
     client_socket = -1;
+    read_timeout_ms = 100;
 }
 
 Network_Client::~Network_Client()
@@ -67,8 +68,10 @@ bool Network_Client::Connection_Open()
 
     status = setsockopt(
         client_socket,
-        SOL_SOCKET, SO_RCVTIMEO,
-        (const char*) &tv, sizeof tv);
+        SOL_SOCKET,
+        SO_RCVTIMEO,
+        (const char*) &tv,
+        sizeof(tv));
 
     if (status < 0)
     {
@@ -128,7 +131,9 @@ void Network_Client::Connection_Close()
 {
     is_open = false;
     is_connected = false;
+
     close(client_socket);
+    client_socket = -1;
 }
 
 /**
@@ -169,10 +174,13 @@ string Network_Client::Read()
     int socket_fd = client_socket;
     int status = 0;
 
+    int timeout_sec = read_timeout_ms / 1000;
+    int timeout_ms = read_timeout_ms - timeout_sec * 1000;
+
     fd_set read_set;
     timeval timeout = {};
-    timeout.tv_sec=0;
-    timeout.tv_usec=100000;
+    timeout.tv_sec = timeout_sec;
+    timeout.tv_usec = timeout_ms;
 
     FD_ZERO(&read_set);
     FD_SET(socket_fd, &read_set);
@@ -186,28 +194,26 @@ string Network_Client::Read()
 
     if (status < 0)
     {
-        cerr << strerror(errno);
         cerr << "Network_Client::Read: select error\n";
+        cerr << strerror(errno) << endl;
         return "";
     }
 
-    // timeout
-    if (status == 0)
-        usleep(10000);
+    if (status == 0) // timeout
+        usleep(10000); // 10 ms
 
-    // no red data
     if (not FD_ISSET(socket_fd, &read_set))
         return "";
 
     // read data
     char buffer[4096] = {0};
-    status = recv(socket_fd, buffer, 4096, SOCK_NONBLOCK);
+    status = read(socket_fd, buffer, 4096);
 
-    // read error
+    // check if error
     if (status < 0)
     {
-        cerr << strerror(errno);
         cerr << "Network_Client::Read: read string\n";
+        cerr << strerror(errno) << endl;
         return "";
     }
 
@@ -260,4 +266,15 @@ void Network_Client::Read(char* buffer, size_t size)
 
         this->Connection_Close();
     }
+}
+
+/**
+ * @brief Network_Client::Set_Read_Timeout
+ * @param timeout_ms - read timeout in ms
+ * @details Read methods use this to break waiting.
+ */
+
+void Network_Client::Set_Read_Timeout(int timeout_ms)
+{
+    read_timeout_ms = timeout_ms;
 }

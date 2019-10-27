@@ -45,7 +45,7 @@ bool Network_Server::Connection_Open()
     server_socket = socket(
         PF_INET,
         SOCK_STREAM,
-        IPPROTO_TCP);
+        0);//IPPROTO_TCP);
 
     // error create socket
     if (server_socket < 0)
@@ -56,6 +56,38 @@ bool Network_Server::Connection_Open()
         return false;
     }
 
+    int enable = 1;
+    int status;
+    status = setsockopt(
+        server_socket,
+        SOL_SOCKET,
+        SO_REUSEADDR,
+        &enable, sizeof(int));
+
+    if (status < 0)
+    {
+        cerr << "Network_Server::Connection_Open: "
+                "setsockopt reuse address failed\n";
+
+        close(server_socket);
+        return false;
+    }
+
+    status = setsockopt(
+        server_socket,
+        SOL_SOCKET,
+        SO_REUSEPORT,
+        &enable, sizeof(int));
+
+    if (status < 0)
+    {
+        cerr << "Network_Server::Connection_Open: "
+                "setsockopt reuse port failed\n";
+
+        close(server_socket);
+        return false;
+    }
+
     // set socked data
     sockaddr_in socket_data = {};
     memset(&socket_data, 0, sizeof(socket_data));
@@ -63,7 +95,7 @@ bool Network_Server::Connection_Open()
     socket_data.sin_port = htons(server_port);
     socket_data.sin_addr.s_addr = INADDR_ANY;
 
-    int status = bind(
+    status = bind(
         server_socket,
         (sockaddr*) &socket_data,
         sizeof(socket_data));
@@ -71,21 +103,11 @@ bool Network_Server::Connection_Open()
     // error set socked data
     if (status < 0)
     {
-        int yes=1;
-        status = setsockopt(
-            server_socket,
-            SOL_SOCKET,
-            SO_REUSEADDR,
-            &yes, sizeof(yes));
+        cerr << "Network_Server::Connection_Open: "
+                "error bind failed\n";
 
-        if (status < 0)
-        {
-            cerr << "Network_Server::Connection_Open: "
-                    "error bind failed\n";
-
-            close(server_socket);
-            return false;
-        }
+        close(server_socket);
+        return false;
     }
 
     // set the option active
@@ -135,10 +157,10 @@ void Network_Server::Connection_Close()
 
     // close socket
     if (this->Is_Open())
-    {
-        is_open = false;
         close(server_socket);
-    }
+
+    server_connect = -1;
+    is_open = false;
 }
 
 /**
@@ -172,8 +194,12 @@ void Network_Server::Connection_Accept()
     cout << inet_ntoa(client.sin_addr);
     cout << endl;
 
-    // close old connection
-    close(server_connect);
+    // last connection is not close
+    if (server_connect != -1)
+    {
+        cerr << "Network_Server::Connection_Accept: "
+                "last client connection is not close\n";
+    }
 
     // everything ok
     server_connect = new_connect;
@@ -198,6 +224,7 @@ void Network_Server::Disconnect()
         close(server_connect);
     }
 
+    server_connect = -1;
     is_connected = false;
 }
 

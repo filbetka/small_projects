@@ -10,7 +10,7 @@ class Network_Server : public Abstract_Medium
 
     public:
 
-        Network_Server(int port=1100);
+        explicit Network_Server(int port=1100);
         ~Network_Server();
 
     private:
@@ -28,19 +28,19 @@ class Network_Server : public Abstract_Medium
     public:
 
         // connection
-        bool Connection_Open();
-        void Connection_Close();
+        bool Connection_Open() final;
+        void Connection_Close() final;
         void Connection_Accept();
         void Disconnect();
 
     public:
 
         // read and write
-        void Write(string data);
-        string Read();
+        void Write(string data) final;
+        string Read() final;
 
-        void Write(char* data, size_t size);
-        void Read(char* buffer, size_t size);
+        void Write(char* data, size_t size) final;
+        void Read(char* buffer, size_t size) final;
 
         void Set_Connections_Number(int number);
         void Set_Read_Timeout(int timeout_ms);

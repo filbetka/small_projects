@@ -12,7 +12,7 @@ int main()
         return 0;
 
     server.Connection_Accept();
-    //server.Set_Read_Timeout(10000);
+    server.Set_Read_Timeout(3000);
 
     // information for user
     cout << "Start transmission: " << endl;
@@ -29,9 +29,9 @@ int main()
         cout << "write: " << data;
         server.Write(data);
         cout << endl;
-
-        sleep(1);
     }
 
+    server.Disconnect();
+    server.Connection_Close();
     return 0;
 }

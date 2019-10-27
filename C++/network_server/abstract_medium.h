@@ -30,6 +30,9 @@ class Abstract_Medium
         virtual void Write(string data) = 0;
         virtual string Read() = 0;
 
+        virtual void Write(char* data, size_t size) = 0;
+        virtual void Read(char* buffer, size_t size) = 0;
+
         // get status
         bool Is_Open();
         bool Is_Connected();
