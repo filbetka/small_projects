@@ -17,11 +17,10 @@ class Network_Server
 
         // server data
         Server_Socket server_socket;
-        Server_Connection* connections;
+        vector<Server_Connection> connections;
 
         // others
         int max_connections;
-        int connections_number;
         int read_timeout_ms;
 
     public:

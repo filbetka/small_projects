@@ -30,6 +30,8 @@ class Server_Connection
         void Write(char* data, size_t size);
         void Read(char* buffer, size_t size);
 
+    public:
+
         bool Is_Connected();
         void Set_Read_Timeout(int timeout_ms);
 

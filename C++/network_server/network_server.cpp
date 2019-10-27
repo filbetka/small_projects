@@ -20,9 +20,7 @@
 Network_Server::Network_Server(int port):
     server_socket(port)
 {
-    connections = nullptr;
     max_connections = 10;
-    connections_number = 0;
     read_timeout_ms = 100;
 }
 
@@ -33,8 +31,7 @@ Network_Server::Network_Server(int port):
 
 bool Network_Server::Connection_Open()
 {
-    //connections = new Server_Connection[max_connections];
-    server_socket.Connection_Open();
+    return server_socket.Connection_Open();
 }
 
 /**
