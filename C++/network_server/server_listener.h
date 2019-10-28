@@ -23,7 +23,7 @@ class Server_Listener
 
     public:
 
-        void Thread_Method();
+        void Run();
         void Start();
         void Join();
 

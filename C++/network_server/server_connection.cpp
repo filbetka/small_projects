@@ -28,6 +28,11 @@ Server_Connection::Server_Connection(int connection)
         is_connected = false;
 }
 
+bool Server_Connection::Validate()
+{
+    return server_connection != -1;
+}
+
 /**
  * @brief Server_Connection::Disconnect
  * @details
@@ -35,6 +40,14 @@ Server_Connection::Server_Connection(int connection)
 
 void Server_Connection::Disconnect()
 {
+    if (not this->Validate())
+    {
+        cerr << "Server_Connection::Disconnect: "
+                "bad connection number\n";
+
+        return;
+    }
+
     if (this->Is_Connected())
     {
         // send finish connection signal to client
@@ -61,8 +74,16 @@ bool Server_Connection::Is_Connected()
  * @details Write data to client
  */
 
-void Server_Connection::Write(string data)
+void Server_Connection::Write(const string& data)
 {
+    if (not this->Validate())
+    {
+        cerr << "Server_Connection::Write: "
+                "bad connection number\n";
+
+        return;
+    }
+
     int status = 0;
 
     // send text
@@ -91,6 +112,14 @@ void Server_Connection::Write(string data)
 
 string Server_Connection::Read()
 {
+    if (not this->Validate())
+    {
+        cerr << "Server_Connection::Read: "
+                "bad connection number\n";
+
+        return "";
+    }
+
     int socket_fd = server_connection;
     int status = 0;
 
@@ -150,6 +179,14 @@ string Server_Connection::Read()
 
 void Server_Connection::Write(char* data, size_t size)
 {
+    if (not this->Validate())
+    {
+        cerr << "Server_Connection::Write: "
+                "bad connection number\n";
+
+        return;
+    }
+
     int status = 0;
 
     // send text
@@ -175,6 +212,14 @@ void Server_Connection::Write(char* data, size_t size)
 
 void Server_Connection::Read(char* buffer, size_t size)
 {
+    if (not this->Validate())
+    {
+        cerr << "Server_Connection::Read: "
+                "bad connection number\n";
+
+        return;
+    }
+
     int status = 0;
 
     // read data

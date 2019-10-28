@@ -20,11 +20,12 @@ class Server_Connection
 
     public:
 
+        bool Validate();
         void Disconnect();
 
     public:
 
-        void Write(string data);
+        void Write(const string& data);
         string Read();
 
         void Write(char* data, size_t size);

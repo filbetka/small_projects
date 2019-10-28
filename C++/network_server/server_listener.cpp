@@ -14,13 +14,13 @@ Server_Listener::Server_Listener(Server_Socket& socket):
 }
 
 /**
- * @brief Server_Listener::Thread_Method
+ * @brief Server_Listener::Run
  * @details The method is called by Start method
  * in another thread. It waiting for new connection
  * to accept.
  */
 
-void Server_Listener::Thread_Method()
+void Server_Listener::Run()
 {
     // start running
     is_running = true;
@@ -42,7 +42,7 @@ void Server_Listener::Start()
 {
     accepted_connection = -1;
     listener_thread = thread {
-        &Server_Listener::Thread_Method,
+        &Server_Listener::Run,
         this
     };
 }
@@ -54,7 +54,8 @@ void Server_Listener::Start()
 
 void Server_Listener::Join()
 {
-    listener_thread.join();
+    if (listener_thread.joinable())
+        listener_thread.join();
 }
 
 /**

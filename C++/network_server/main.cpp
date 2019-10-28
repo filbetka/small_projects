@@ -11,7 +11,8 @@ int main()
         return 0;
 
     server.Set_Read_Timeout(3000);
-    server.Connection_Accept(false);
+    server.Connection_Accept(true);
+    server.Wait_For_Accept(5000);
 
     Server_Connection connection =
         server.Connection(0);
@@ -33,7 +34,6 @@ int main()
         cout << endl;
     }
 
-    connection.Disconnect();
     server.Server_Close();
     return 0;
 }

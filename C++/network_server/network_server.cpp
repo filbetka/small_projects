@@ -1,5 +1,4 @@
 #include "network_server.h"
-#include <unistd.h>
 #include <iostream>
 
 /**
@@ -22,6 +21,7 @@ Network_Server::Network_Server(int port):
 
 bool Network_Server::Server_Open()
 {
+    if (server_socket.Is_Open()) return true;
     return server_socket.Server_Open();
 }
 
@@ -32,7 +32,15 @@ bool Network_Server::Server_Open()
 
 void Network_Server::Server_Close()
 {
+    // close all connections
+    for (auto connection : connections)
+        connection.Disconnect();
+
+    // close server
     server_socket.Server_Close();
+
+    // join listener thread
+    listener.Join();
 }
 
 bool Network_Server::Is_Open() const
@@ -54,6 +62,7 @@ void Network_Server::Connection_Accept(bool async)
     if (async)
     {
         listener.Start();
+        while (not listener.Is_Running());
         return;
     }
 
@@ -89,8 +98,9 @@ void Network_Server::Wait_For_Accept(int ms)
             break;
         }
 
-        usleep(10000);
         ms -= 10;
+        this_thread::sleep_for(
+            chrono::milliseconds(10));
     }
 }
 
