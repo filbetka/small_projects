@@ -25,6 +25,21 @@ bool Network_Server::Server_Open()
     return server_socket.Server_Open();
 }
 
+/**
+ * @brief Network_Server::Server_Close
+ * @details Close connection and socket
+ */
+
+void Network_Server::Server_Close()
+{
+    server_socket.Server_Close();
+}
+
+bool Network_Server::Is_Open() const
+{
+    return server_socket.Is_Open();
+}
+
 void Network_Server::Connection_Accept(bool async)
 {
     if (not server_socket.Is_Open())
@@ -45,13 +60,12 @@ void Network_Server::Connection_Accept(bool async)
     else
     {
         // accept new connection
-        int accepted_connection =
-            server_socket.Connection_Accept();
+        Server_Connection connection(
+            server_socket.Connection_Accept());
 
         // added to connections list
-        connections.push_back(
-            Server_Connection(
-                accepted_connection));
+        connection.Set_Read_Timeout(read_timeout_ms);
+        connections.push_back(connection);
     }
 }
 
@@ -65,13 +79,12 @@ void Network_Server::Wait_For_Accept(int ms)
             listener.Join();
 
             // get new connection
-            int accepted_connection =
-                listener.Accepted_Connection();
+            Server_Connection connection(
+                listener.Accepted_Connection());
 
             // added to connections list
-            connections.push_back(
-                Server_Connection(
-                    accepted_connection));
+            connection.Set_Read_Timeout(read_timeout_ms);
+            connections.push_back(connection);
 
             break;
         }
@@ -81,14 +94,17 @@ void Network_Server::Wait_For_Accept(int ms)
     }
 }
 
-/**
- * @brief Network_Server::Server_Close
- * @details Close connection and socket
- */
-
-void Network_Server::Server_Close()
+Server_Connection Network_Server::Connection(int number)
 {
-    server_socket.Server_Close();
+    if (connections.size() <= number)
+    {
+        cerr << "Network_Server::Connection: "
+                "the connection not exists";
+
+        return Server_Connection(-1);
+    }
+
+    return connections[number];
 }
 
 /**
@@ -120,14 +136,8 @@ void Network_Server::Set_Connections_Number(int number)
 
 void Network_Server::Set_Read_Timeout(int timeout_ms)
 {
-    if (server_socket.Is_Open())
-    {
-        cerr << "Network_Server::Set_Read_Timeout: "
-                "trying change timeout with "
-                "open connection";
-
-        return;
-    }
+    for (auto connection : connections)
+        connection.Set_Read_Timeout(timeout_ms);
 
     read_timeout_ms = timeout_ms;
 }

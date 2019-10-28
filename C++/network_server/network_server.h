@@ -34,10 +34,12 @@ class Network_Server
         // server
         bool Server_Open();
         void Server_Close();
+        bool Is_Open() const;
 
         // management
         void Connection_Accept(bool async);
         void Wait_For_Accept(int ms);
+        Server_Connection Connection(int number);
 
     public:
 
