@@ -1,4 +1,5 @@
 #include "network_server.h"
+#include <unistd.h>
 #include <iostream>
 
 /**
@@ -21,11 +22,63 @@ Network_Server::Network_Server(int port):
 
 bool Network_Server::Server_Open()
 {
-    // create server socket and start listener
-    bool opened = server_socket.Server_Open();
-    if (opened) listener.Start();
+    return server_socket.Server_Open();
+}
 
-    return opened;
+void Network_Server::Connection_Accept(bool async)
+{
+    if (not server_socket.Is_Open())
+    {
+        cerr << "Network_Server::Connection_Accept: "
+                "socket is not open";
+
+        return;
+    }
+
+    // async calling accept
+    if (async)
+    {
+        listener.Start();
+        return;
+    }
+
+    else
+    {
+        // accept new connection
+        int accepted_connection =
+            server_socket.Connection_Accept();
+
+        // added to connections list
+        connections.push_back(
+            Server_Connection(
+                accepted_connection));
+    }
+}
+
+void Network_Server::Wait_For_Accept(int ms)
+{
+    while (ms > 0)
+    {
+        if (not listener.Is_Running())
+        {
+            // join listener thread
+            listener.Join();
+
+            // get new connection
+            int accepted_connection =
+                listener.Accepted_Connection();
+
+            // added to connections list
+            connections.push_back(
+                Server_Connection(
+                    accepted_connection));
+
+            break;
+        }
+
+        usleep(10000);
+        ms -= 10;
+    }
 }
 
 /**

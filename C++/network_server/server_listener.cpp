@@ -48,6 +48,16 @@ void Server_Listener::Start()
 }
 
 /**
+ * @brief Server_Listener::Join
+ * @details Join thread to main thread.
+ */
+
+void Server_Listener::Join()
+{
+    listener_thread.join();
+}
+
+/**
  * @brief Server_Listener::Accepted_Connection
  * @return new accepted connection.
  */

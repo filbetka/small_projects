@@ -35,11 +35,9 @@ class Network_Server
         bool Server_Open();
         void Server_Close();
 
-        // managment
-        void Connection_Accept();
-        void Connection_Async_Accept();
-        void Wait_For_Async_Accept();
-        void Accept_New_Connection();
+        // management
+        void Connection_Accept(bool async);
+        void Wait_For_Accept(int ms);
 
     public:
 

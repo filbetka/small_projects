@@ -25,6 +25,7 @@ class Server_Listener
 
         void Thread_Method();
         void Start();
+        void Join();
 
         int Accepted_Connection() const;
         bool Is_Running() const;
