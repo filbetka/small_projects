@@ -26,14 +26,14 @@ class Server_Socket
     public:
 
         // connection
-        bool Connection_Open();
-        void Connection_Close();
-        int Connection_Accept();
+        bool Server_Open();
+        void Server_Close();
+        int Connection_Accept() const;
 
     public:
 
         void Set_Connections_Number(int number);
-        bool Is_Open();
+        bool Is_Open() const;
 
 };
 

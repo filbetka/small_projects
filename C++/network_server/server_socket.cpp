@@ -5,11 +5,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 
 /**
  * @class Server_Socket
@@ -30,21 +30,21 @@ Server_Socket::Server_Socket(int port)
 Server_Socket::~Server_Socket()
 {
     if (this->Is_Open())
-        this->Connection_Close();
+        this->Server_Close();
 }
 
 /**
- * @brief Server_Socket::Connection_Open
+ * @brief Server_Socket::Server_Open
  * @return if open was succeed
  */
 
-bool Server_Socket::Connection_Open()
+bool Server_Socket::Server_Open()
 {
     // create socket
     server_socket = socket(
         PF_INET,
         SOCK_STREAM,
-        0);//IPPROTO_TCP);
+        0);
 
     // error create socket
     if (server_socket < 0)
@@ -146,11 +146,11 @@ bool Server_Socket::Connection_Open()
 }
 
 /**
- * @brief Server_Socket::Connection_Close
+ * @brief Server_Socket::Server_Close
  * @details Close connection and socket
  */
 
-void Server_Socket::Connection_Close()
+void Server_Socket::Server_Close()
 {
     // close socket
     if (this->Is_Open())
@@ -166,7 +166,7 @@ void Server_Socket::Connection_Close()
  * @return connection number for service
  */
 
-int Server_Socket::Connection_Accept()
+int Server_Socket::Connection_Accept() const
 {
     sockaddr_in client = {};
     int length = sizeof(sockaddr_in);
@@ -212,7 +212,7 @@ void Server_Socket::Set_Connections_Number(int number)
  * @return true if medium is open
  */
 
-bool Server_Socket::Is_Open()
+bool Server_Socket::Is_Open() const
 {
     return is_open;
 }

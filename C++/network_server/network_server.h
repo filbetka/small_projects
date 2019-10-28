@@ -3,7 +3,10 @@
 
 #include "server_socket.h"
 #include "server_connection.h"
+#include "server_listener.h"
 #include <vector>
+using Connections_List =
+    vector<Server_Connection>;
 
 
 class Network_Server
@@ -17,7 +20,10 @@ class Network_Server
 
         // server data
         Server_Socket server_socket;
-        vector<Server_Connection> connections;
+        Connections_List connections;
+
+        // accept listener
+        Server_Listener listener;
 
         // others
         int max_connections;
@@ -25,9 +31,15 @@ class Network_Server
 
     public:
 
-        // connection
-        bool Connection_Open();
-        void Connection_Close();
+        // server
+        bool Server_Open();
+        void Server_Close();
+
+        // managment
+        void Connection_Accept();
+        void Connection_Async_Accept();
+        void Wait_For_Async_Accept();
+        void Accept_New_Connection();
 
     public:
 

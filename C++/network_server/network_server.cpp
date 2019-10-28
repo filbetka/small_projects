@@ -1,16 +1,6 @@
 #include "network_server.h"
 #include <iostream>
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
-
 /**
  * @class Network_Server
  * @details The class create network server
@@ -18,30 +8,34 @@
  */
 
 Network_Server::Network_Server(int port):
-    server_socket(port)
+    server_socket(port), listener(server_socket)
 {
     max_connections = 10;
     read_timeout_ms = 100;
 }
 
 /**
- * @brief Network_Server::Connection_Open
+ * @brief Network_Server::Server_Open
  * @return if open was succeed
  */
 
-bool Network_Server::Connection_Open()
+bool Network_Server::Server_Open()
 {
-    return server_socket.Connection_Open();
+    // create server socket and start listener
+    bool opened = server_socket.Server_Open();
+    if (opened) listener.Start();
+
+    return opened;
 }
 
 /**
- * @brief Network_Server::Connection_Close
+ * @brief Network_Server::Server_Close
  * @details Close connection and socket
  */
 
-void Network_Server::Connection_Close()
+void Network_Server::Server_Close()
 {
-    server_socket.Connection_Close();
+    server_socket.Server_Close();
 }
 
 /**
