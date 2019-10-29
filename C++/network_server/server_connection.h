@@ -15,12 +15,14 @@ class Server_Connection
     private:
 
         int server_connection;
+        string server_address;
+
         int read_timeout_ms;
         bool is_connected;
 
     public:
 
-        bool Validate();
+        bool Validate() const;
         void Disconnect();
 
     public:
@@ -34,7 +36,10 @@ class Server_Connection
     public:
 
         bool Is_Connected();
+        string Client_Address();
+
         void Set_Read_Timeout(int timeout_ms);
+        void Set_Client_Address(string address);
 
 };
 

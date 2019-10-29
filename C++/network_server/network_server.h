@@ -6,7 +6,7 @@
 #include "server_listener.h"
 #include <vector>
 using Connections_List =
-    vector<Server_Connection>;
+    vector<Server_Connection*>;
 
 
 class Network_Server
@@ -38,8 +38,11 @@ class Network_Server
 
         // management
         void Connection_Accept(bool async);
-        void Wait_For_Accept(int ms);
-        Server_Connection Connection(int number);
+        void Waiting_For_Accept(int ms);
+        bool Waiting_Completed();
+
+        Server_Connection* Connection(int number) const;
+        Connections_List Connections();
 
     public:
 

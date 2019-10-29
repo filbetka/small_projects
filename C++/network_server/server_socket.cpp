@@ -163,10 +163,10 @@ void Server_Socket::Server_Close()
 /**
  * @brief Server_Socket::Connection_Accept
  * @details Accept new connections
- * @return connection number for service
+ * @return connection for service
  */
 
-int Server_Socket::Connection_Accept() const
+Server_Connection* Server_Socket::Connection_Accept() const
 {
     sockaddr_in client = {};
     int length = sizeof(sockaddr_in);
@@ -184,15 +184,20 @@ int Server_Socket::Connection_Accept() const
                 "Accept failed\n";
 
         close(new_connect);
-        return new_connect;
+        return nullptr;
     }
 
     // show information about accept
-    cout << "New client with IP: ";
+    cout << "\nNew client with IP: ";
     cout << inet_ntoa(client.sin_addr);
     cout << endl;
 
-    return new_connect;
+    // create connection object
+    auto connection = new Server_Connection(new_connect);
+    connection->Set_Client_Address(
+        inet_ntoa(client.sin_addr));
+
+    return connection;
 }
 
 /**

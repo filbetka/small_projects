@@ -16,7 +16,7 @@ class Server_Listener
     private:
 
         Server_Socket& server_socket;
-        int accepted_connection;
+        Server_Connection* accepted;
 
         thread listener_thread;
         bool is_running;
@@ -26,9 +26,11 @@ class Server_Listener
         void Run();
         void Start();
         void Join();
+        void Clear();
 
-        int Accepted_Connection() const;
+        Server_Connection* Accepted_Connection() const;
         bool Is_Running() const;
+        bool Is_Empty() const;
 
 };
 

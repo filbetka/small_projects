@@ -1,6 +1,18 @@
 #include <iostream>
+#include <algorithm>
 #include "network_server.h"
 
+void Remove_Char(string& data, char to_remove)
+{
+    data.erase(
+        remove(
+            data.begin(),
+            data.end(),
+            to_remove
+        ),
+        data.end()
+    );
+}
 
 int main()
 {
@@ -10,28 +22,39 @@ int main()
     if (not server.Is_Open())
         return 0;
 
-    server.Set_Read_Timeout(3000);
-    server.Connection_Accept(true);
-    server.Wait_For_Accept(5000);
+    server.Set_Read_Timeout(1000);
+    bool working = true;
 
-    Server_Connection connection =
-        server.Connection(0);
-
-    // information for user
-    cout << "Start transmission: " << endl;
-
-    // write and read data
-    for (int k = 0; k < 10; ++k)
+    while (working)
     {
-        cout << "read: ";
-        cout << connection.Read();
-        cout << "\t";
+        if (server.Waiting_Completed())
+            server.Connection_Accept(true);
 
-        string data = "Hello";
+        server.Waiting_For_Accept(0);
+        Connections_List connections =
+            server.Connections();
 
-        cout << "write: " << data;
-        connection.Write(data);
-        cout << endl;
+        for (auto connection : connections)
+        {
+            // information for user
+            cout << connection->Client_Address() << "\t";
+
+            // write data
+            cout << "write: " << "Hello";
+            connection->Write("Hello\n");
+            cout << "\t";
+
+            // read data
+            string data = connection->Read();
+            Remove_Char(data, '\n');
+
+            cout << "read: ";
+            cout << data << endl;
+
+            // analise data
+            if (data == "x")
+                working = false;
+        }
     }
 
     server.Server_Close();

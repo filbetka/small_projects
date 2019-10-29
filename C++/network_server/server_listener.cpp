@@ -7,9 +7,8 @@
  */
 
 Server_Listener::Server_Listener(Server_Socket& socket):
-    server_socket(socket)
+    server_socket(socket), accepted(nullptr)
 {
-    accepted_connection = -1;
     is_running = false;
 }
 
@@ -26,8 +25,7 @@ void Server_Listener::Run()
     is_running = true;
 
     // processing
-    accepted_connection =
-        server_socket.Connection_Accept();
+    accepted = server_socket.Connection_Accept();
 
     // finished
     is_running = false;
@@ -40,7 +38,7 @@ void Server_Listener::Run()
 
 void Server_Listener::Start()
 {
-    accepted_connection = -1;
+    accepted = nullptr;
     listener_thread = thread {
         &Server_Listener::Run,
         this
@@ -59,13 +57,35 @@ void Server_Listener::Join()
 }
 
 /**
+ * @brief Server_Listener::Clear
+ * @details Clear data to default.
+ */
+
+void Server_Listener::Clear()
+{
+    accepted = nullptr;
+    is_running = false;
+}
+
+/**
+ * @brief Server_Listener::Is_Empty
+ * @return if has not any connection.
+ */
+
+bool Server_Listener::Is_Empty() const
+{
+    return not accepted;
+}
+
+/**
  * @brief Server_Listener::Accepted_Connection
  * @return new accepted connection.
  */
 
-int Server_Listener::Accepted_Connection() const
+Server_Connection* Server_Listener
+    ::Accepted_Connection() const
 {
-    return accepted_connection;
+    return accepted;
 }
 
 /**

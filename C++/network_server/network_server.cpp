@@ -34,7 +34,7 @@ void Network_Server::Server_Close()
 {
     // close all connections
     for (auto connection : connections)
-        connection.Disconnect();
+        connection->Disconnect();
 
     // close server
     server_socket.Server_Close();
@@ -69,16 +69,16 @@ void Network_Server::Connection_Accept(bool async)
     else
     {
         // accept new connection
-        Server_Connection connection(
+        Server_Connection* connection(
             server_socket.Connection_Accept());
 
         // added to connections list
-        connection.Set_Read_Timeout(read_timeout_ms);
+        connection->Set_Read_Timeout(read_timeout_ms);
         connections.push_back(connection);
     }
 }
 
-void Network_Server::Wait_For_Accept(int ms)
+void Network_Server::Waiting_For_Accept(int ms)
 {
     while (ms > 0)
     {
@@ -88,12 +88,13 @@ void Network_Server::Wait_For_Accept(int ms)
             listener.Join();
 
             // get new connection
-            Server_Connection connection(
+            Server_Connection* connection(
                 listener.Accepted_Connection());
 
             // added to connections list
-            connection.Set_Read_Timeout(read_timeout_ms);
+            connection->Set_Read_Timeout(read_timeout_ms);
             connections.push_back(connection);
+            listener.Clear();
 
             break;
         }
@@ -104,17 +105,53 @@ void Network_Server::Wait_For_Accept(int ms)
     }
 }
 
-Server_Connection Network_Server::Connection(int number)
+bool Network_Server::Waiting_Completed()
+{
+    if (not listener.Is_Empty())
+    {
+        // join listener thread
+        listener.Join();
+
+        // get new connection
+        Server_Connection* connection(
+            listener.Accepted_Connection());
+
+        // added to connections list
+        connection->Set_Read_Timeout(read_timeout_ms);
+        connections.push_back(connection);
+        listener.Clear();
+    }
+
+    return not listener.Is_Running();
+}
+
+Server_Connection* Network_Server
+    ::Connection(int number) const
 {
     if (connections.size() <= number)
     {
         cerr << "Network_Server::Connection: "
                 "the connection not exists";
 
-        return Server_Connection(-1);
+        return nullptr;
     }
 
     return connections[number];
+}
+
+Connections_List Network_Server::Connections()
+{
+    Connections_List active;
+    for (auto connection : connections)
+    {
+        if (connection->Validate())
+            active.push_back(connection);
+
+        else delete connection;
+    }
+
+    connections = active;
+    return connections;
 }
 
 /**
@@ -147,7 +184,7 @@ void Network_Server::Set_Connections_Number(int number)
 void Network_Server::Set_Read_Timeout(int timeout_ms)
 {
     for (auto connection : connections)
-        connection.Set_Read_Timeout(timeout_ms);
+        connection->Set_Read_Timeout(timeout_ms);
 
     read_timeout_ms = timeout_ms;
 }

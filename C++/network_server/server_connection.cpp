@@ -28,7 +28,7 @@ Server_Connection::Server_Connection(int connection)
         is_connected = false;
 }
 
-bool Server_Connection::Validate()
+bool Server_Connection::Validate() const
 {
     return server_connection != -1;
 }
@@ -66,6 +66,11 @@ void Server_Connection::Disconnect()
 bool Server_Connection::Is_Connected()
 {
     return is_connected;
+}
+
+string Server_Connection::Client_Address()
+{
+    return server_address;
 }
 
 /**
@@ -238,10 +243,20 @@ void Server_Connection::Read(char* buffer, size_t size)
 
 /**
  * @brief Server_Connection::Set_Read_Timeout
- * @param timeout_ms
+ * @param timeout_ms - timeout for read methods
  */
 
 void Server_Connection::Set_Read_Timeout(int timeout_ms)
 {
     read_timeout_ms = timeout_ms;
+}
+
+/**
+ * @brief Server_Connection::Set_Client_Address
+ * @param address - client ip address
+ */
+
+void Server_Connection::Set_Client_Address(string address)
+{
+    server_address = move(address);
 }

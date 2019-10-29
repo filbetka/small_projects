@@ -1,8 +1,7 @@
 #ifndef SERVER_SOCKET_H
 #define SERVER_SOCKET_H
 
-#include <string>
-using namespace std;
+#include "server_connection.h"
 
 
 class Server_Socket
@@ -28,7 +27,7 @@ class Server_Socket
         // connection
         bool Server_Open();
         void Server_Close();
-        int Connection_Accept() const;
+        Server_Connection* Connection_Accept() const;
 
     public:
 
