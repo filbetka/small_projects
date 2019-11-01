@@ -1,7 +1,7 @@
 #ifndef SERVER_SOCKET_H
 #define SERVER_SOCKET_H
 
-#include "server_connection.h"
+#include "../tools/server_connection.h"
 
 
 class Server_Socket

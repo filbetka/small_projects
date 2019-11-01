@@ -1,9 +1,9 @@
 #ifndef NETWORK_SERVER_H
 #define NETWORK_SERVER_H
 
-#include "server_socket.h"
-#include "server_connection.h"
-#include "server_listener.h"
+#include "socket/server_socket.h"
+#include "tools/server_connection.h"
+#include "listener/server_listener.h"
 #include <vector>
 using Connections_List =
     vector<Server_Connection*>;

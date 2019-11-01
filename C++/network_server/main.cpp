@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include "network_server.h"
+#include "network_server/network_server.h"
 
 void Remove_Char(string& data, char to_remove)
 {
