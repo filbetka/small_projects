@@ -1,10 +1,10 @@
 #ifndef NETWORK_CLIENT_H
 #define NETWORK_CLIENT_H
 
-#include "abstract_medium.h"
+#include "client_socket.h"
 
 
-class Network_Client : public Abstract_Medium
+class Network_Client
 {
 
     public:
@@ -14,23 +14,22 @@ class Network_Client : public Abstract_Medium
 
     private:
 
-        string client_address;
-        int client_port;
-        int client_socket;
+        Client_Socket client_socket;
         int read_timeout_ms;
 
     public:
 
         // connection
-        bool Connection_Open() final;
-        void Connection_Close() final;
+        bool Connection_Open();
+        void Connection_Close();
+        bool Is_Connected() const;
 
         // read and write
-        void Write(string data) final;
-        string Read() final;
+        void Write(const string& data);
+        string Read();
 
-        void Write(char* data, size_t size) final;
-        void Read(char* buffer, size_t size) final;
+        void Write(char* data, size_t size);
+        void Read(char* buffer, size_t size);
 
         void Set_Read_Timeout(int timeout_ms);
 

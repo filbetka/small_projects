@@ -5,11 +5,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 
 /**
  * @class Network_Client
@@ -23,17 +23,15 @@
  * @param port - port number to connect
  */
 
-Network_Client::Network_Client(string address, int port)
+Network_Client::Network_Client(string address, int port):
+    client_socket(move(address), port)
 {
-    client_address = move(address);
-    client_port = port;
-    client_socket = -1;
     read_timeout_ms = 100;
 }
 
 Network_Client::~Network_Client()
 {
-    if (this->Is_Open())
+    if (client_socket.Is_Connected())
         this->Connection_Close();
 }
 
@@ -44,82 +42,7 @@ Network_Client::~Network_Client()
 
 bool Network_Client::Connection_Open()
 {
-    // connection is open
-    if (this->Is_Open())
-        return true;
-
-    // create socket
-    client_socket = socket(
-        AF_INET, SOCK_STREAM, 0);
-
-    if (client_socket < 0)
-    {
-        cerr << "Network_Client::Connection_Open: "
-                "create socket error\n";
-
-        return false;
-    }
-
-    // ...
-    int status = 0;
-    timeval tv = {};
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
-
-    status = setsockopt(
-        client_socket,
-        SOL_SOCKET,
-        SO_RCVTIMEO,
-        (const char*) &tv,
-        sizeof(tv));
-
-    if (status < 0)
-    {
-        cerr << "Network_Client::Connection_Open: "
-                "error set keep alive\n";
-
-        close(client_socket);
-        return false;
-    }
-
-    // create socket data
-    sockaddr_in data = {};
-    memset(&data, 0, sizeof(data));
-    data.sin_family = AF_INET;
-    data.sin_port = htons(client_port);
-
-    // bind data with port
-    status = inet_pton(
-        AF_INET,
-        client_address.c_str(),
-        &data.sin_addr);
-
-    if (status <= 0)
-    {
-        cerr << "Network_Client::Connection_Open: "
-                "invalid address or address "
-                "not supported\n";
-
-        return false;
-    }
-
-    // open connection
-    status = connect(
-        client_socket,
-        (sockaddr*) &data,
-        sizeof(data));
-
-    if (status < 0)
-    {
-        cerr << "Network_Client::Connection_Open: "
-                "Connection failed\n";
-
-        return false;
-    }
-
-    is_open = true;
-    is_connected = true;
-    return true;
+    return client_socket.Connection_Open();
 }
 
 /**
@@ -129,11 +52,12 @@ bool Network_Client::Connection_Open()
 
 void Network_Client::Connection_Close()
 {
-    is_open = false;
-    is_connected = false;
+    client_socket.Connection_Close();
+}
 
-    close(client_socket);
-    client_socket = -1;
+bool Network_Client::Is_Connected() const
+{
+    return client_socket.Is_Connected();
 }
 
 /**
@@ -142,13 +66,13 @@ void Network_Client::Connection_Close()
  * @details Write data to server
  */
 
-void Network_Client::Write(string data)
+void Network_Client::Write(const string& data)
 {
     int status = 0;
 
     // send text
     status = send(
-        client_socket,
+        client_socket.Connection(),
         data.c_str(),
         data.length(),
         MSG_NOSIGNAL);
@@ -171,7 +95,7 @@ void Network_Client::Write(string data)
 
 string Network_Client::Read()
 {
-    int socket_fd = client_socket;
+    int socket_fd = client_socket.Connection();
     int status = 0;
 
     int timeout_sec = read_timeout_ms / 1000;
@@ -234,7 +158,7 @@ void Network_Client::Write(char* data, size_t size)
 
     // send text
     status = send(
-        client_socket,
+        client_socket.Connection(),
         data, size,
         MSG_NOSIGNAL);
 
@@ -254,7 +178,7 @@ void Network_Client::Read(char* buffer, size_t size)
 
     // read data
     status = read(
-        client_socket,
+        client_socket.Connection(),
         buffer,
         size);
 
