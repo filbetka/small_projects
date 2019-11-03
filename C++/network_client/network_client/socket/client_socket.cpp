@@ -15,6 +15,12 @@
  * for every address family (IPv4, IPv6).
  */
 
+/**
+ * @brief Client_Socket::Client_Socket
+ * @param address - IP address to connect
+ * @param port - port number to connect
+ */
+
 Client_Socket::Client_Socket(string address, int port)
 {
     client_address = move(address);

@@ -1,15 +1,11 @@
 #include "server_socket.h"
 #include <iostream>
 
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <cerrno>
 
 /**
  * @class Server_Socket

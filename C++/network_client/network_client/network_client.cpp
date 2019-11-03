@@ -3,18 +3,15 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <cerrno>
 
 /**
  * @class Network_Client
- * @details The class management network ports
- * as client by TCP/IP protocol.
+ * @details The class management network access
+ * by client with TCP/IP protocol. The client
+ * is service for all address family (IPv4, IPv6).
  */
 
 /**
@@ -55,6 +52,11 @@ void Network_Client::Connection_Close()
     client_socket.Connection_Close();
 }
 
+/**
+ * @brief Network_Client::Is_Connected
+ * @return connection is active with server.
+ */
+
 bool Network_Client::Is_Connected() const
 {
     return client_socket.Is_Connected();
@@ -92,7 +94,7 @@ void Network_Client::Write(const string& data)
  * @details Read data from server
  * @return red bytes as string
  */
-
+#include <array>
 string Network_Client::Read()
 {
     int socket_fd = client_socket.Connection();
@@ -171,6 +173,13 @@ void Network_Client::Write(char* data, size_t size)
         this->Connection_Close();
     }
 }
+
+/**
+ * @brief Network_Client::Read
+ * @param buffer - data container
+ * @param size - data size to read
+ * @details Read data from server
+ */
 
 void Network_Client::Read(char* buffer, size_t size)
 {
