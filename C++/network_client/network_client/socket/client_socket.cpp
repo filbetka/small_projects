@@ -5,12 +5,15 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <cerrno>
 
+/**
+ * @class Client_Socket
+ * @details Socket service class.
+ * The object can open and close connection
+ * for every address family (IPv4, IPv6).
+ */
 
 Client_Socket::Client_Socket(string address, int port)
 {
@@ -31,6 +34,12 @@ Client_Socket::~Client_Socket()
         this->Connection_Close();
 }
 
+/**
+ * @brief Client_Socket::Create_Socket
+ * @details Create and validate socket
+ * @return if successful
+ */
+
 bool Client_Socket::Create_Socket()
 {
     // create socket
@@ -47,6 +56,12 @@ bool Client_Socket::Create_Socket()
 
     return true;
 }
+
+/**
+ * @brief Client_Socket::Set_Timeout
+ * @details Create and validate timeout option
+ * @return if successful
+ */
 
 bool Client_Socket::Set_Timeout()
 {
@@ -74,6 +89,12 @@ bool Client_Socket::Set_Timeout()
 
     return true;
 }
+
+/**
+ * @brief Client_Socket::Connect_IPv4
+ * @details Connect and validate for IPv4 family
+ * @return if successful
+ */
 
 bool Client_Socket::Connect_IPv4()
 {
@@ -117,6 +138,12 @@ bool Client_Socket::Connect_IPv4()
     return true;
 }
 
+/**
+ * @brief Client_Socket::Connect_IPv6
+ * @details Connect and validate for IPv6 family
+ * @return if successful
+ */
+
 bool Client_Socket::Connect_IPv6()
 {
     // create socket data
@@ -159,6 +186,12 @@ bool Client_Socket::Connect_IPv6()
     return true;
 }
 
+/**
+ * @brief Client_Socket::Connection_Open
+ * @details Make all operations to open connection
+ * @return if successful
+ */
+
 bool Client_Socket::Connection_Open()
 {
     // connection is open
@@ -184,6 +217,11 @@ bool Client_Socket::Connection_Open()
     return true;
 }
 
+/**
+ * @brief Client_Socket::Connection_Close
+ * @details Close connection with server.
+ */
+
 void Client_Socket::Connection_Close()
 {
     is_connected = false;
@@ -192,20 +230,41 @@ void Client_Socket::Connection_Close()
     client_socket = -1;
 }
 
+/**
+ * @brief Client_Socket::Is_Connected
+ * @return connection is active with server.
+ */
+
 bool Client_Socket::Is_Connected() const
 {
     return is_connected;
 }
+
+/**
+ * @brief Client_Socket::Is_IPv4
+ * @return address is IPv4 family.
+ */
 
 bool Client_Socket::Is_IPv4() const
 {
     return (client_address.find('.') != std::string::npos);
 }
 
+/**
+ * @brief Client_Socket::Is_IPv6
+ * @return address is IPv6 family.
+ */
+
 bool Client_Socket::Is_IPv6() const
 {
     return (client_address.find(':') != std::string::npos);
 }
+
+/**
+ * @brief Client_Socket::Connection
+ * @return connection number for service.
+ * This is a file descriptor to write and read data.
+ */
 
 int Client_Socket::Connection() const
 {
