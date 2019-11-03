@@ -21,6 +21,7 @@ Server_Socket::Server_Socket(int port)
 
     connections_number = 10;
     is_open = false;
+    family = IP_V4;
 }
 
 Server_Socket::~Server_Socket()
@@ -29,12 +30,7 @@ Server_Socket::~Server_Socket()
         this->Server_Close();
 }
 
-/**
- * @brief Server_Socket::Server_Open
- * @return if open was succeed
- */
-
-bool Server_Socket::Server_Open()
+bool Server_Socket::Create_Socket()
 {
     // create socket
     server_socket = socket(
@@ -45,12 +41,17 @@ bool Server_Socket::Server_Open()
     // error create socket
     if (server_socket < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
+        cerr << "Server_Socket::Create_Socket: "
                 "cannot create socket\n";
 
         return false;
     }
 
+    return true;
+}
+
+bool Server_Socket::Reuse_Address()
+{
     int enable = 1;
     int status;
     status = setsockopt(
@@ -61,13 +62,20 @@ bool Server_Socket::Server_Open()
 
     if (status < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
-                "setsockopt reuse address failed\n";
+        cerr << "Server_Socket::Reuse_Address: "
+                "reuse address failed\n";
 
         close(server_socket);
         return false;
     }
 
+    return true;
+}
+
+bool Server_Socket::Reuse_Port()
+{
+    int enable = 1;
+    int status;
     status = setsockopt(
         server_socket,
         SOL_SOCKET,
@@ -76,13 +84,18 @@ bool Server_Socket::Server_Open()
 
     if (status < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
-                "setsockopt reuse port failed\n";
+        cerr << "Server_Socket::Reuse_Port: "
+                "reuse port failed\n";
 
         close(server_socket);
         return false;
     }
 
+    return true;
+}
+
+bool Server_Socket::Bind_Socket()
+{
     // set socked data
     sockaddr_in socket_data = {};
     memset(&socket_data, 0, sizeof(socket_data));
@@ -90,7 +103,7 @@ bool Server_Socket::Server_Open()
     socket_data.sin_port = htons(server_port);
     socket_data.sin_addr.s_addr = INADDR_ANY;
 
-    status = bind(
+    int status = bind(
         server_socket,
         (sockaddr*) &socket_data,
         sizeof(socket_data));
@@ -98,44 +111,75 @@ bool Server_Socket::Server_Open()
     // error set socked data
     if (status < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
-                "error bind failed\n";
+        cerr << "Server_Socket::Bind_Socket: "
+                "bind socket failed\n";
 
         close(server_socket);
         return false;
     }
 
+    return true;
+}
+
+bool Server_Socket::Set_Keep_Alive()
+{
     // set the option active
-    int option_value = 1;
+    int enable = 1;
+    int status;
     status = setsockopt(
         server_socket,
         SOL_SOCKET,
         SO_KEEPALIVE,
-        &option_value,
-        sizeof(option_value));
+        &enable,
+        sizeof(enable));
 
     if (status < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
-                "error set keep alive\n";
+        cerr << "Server_Socket::Set_Keep_Alive: "
+                "set keep alive failed\n";
 
         close(server_socket);
         return false;
     }
 
+    return true;
+}
+
+bool Server_Socket::Set_Listen_Socket()
+{
     // enable listen
-    status = listen(
+    int status = listen(
         server_socket,
         connections_number);
 
     if (status < 0)
     {
-        cerr << "Server_Socket::Connection_Open: "
-                "error listen failed\n";
+        cerr << "Server_Socket::Set_Listen_Socket: "
+                "set listen socket failed\n";
 
         close(server_socket);
         return false;
     }
+
+    return true;
+}
+
+/**
+ * @brief Server_Socket::Server_Open
+ * @return if open was succeed
+ */
+
+bool Server_Socket::Server_Open()
+{
+    if (this->Is_Open())
+        return true;
+
+    if (not this->Create_Socket()) return false;
+    if (not this->Reuse_Address()) return false;
+    if (not this->Reuse_Port()) return false;
+    if (not this->Bind_Socket()) return false;
+    if (not this->Set_Keep_Alive()) return false;
+    if (not this->Set_Listen_Socket()) return false;
 
     is_open = true;
     return true;
@@ -206,6 +250,21 @@ Server_Connection* Server_Socket::Connection_Accept() const
 void Server_Socket::Set_Connections_Number(int number)
 {
     connections_number = number;
+}
+
+void Server_Socket::Set_Address_Family(ADDRESS_FAMILY _family)
+{
+    family = _family;
+}
+
+bool Server_Socket::Is_IPv4() const
+{
+    return family == IP_V4;
+}
+
+bool Server_Socket::Is_IPv6() const
+{
+    return family == IP_V6;
 }
 
 /**

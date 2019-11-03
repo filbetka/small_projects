@@ -188,3 +188,18 @@ void Network_Server::Set_Read_Timeout(int timeout_ms)
 
     read_timeout_ms = timeout_ms;
 }
+
+void Network_Server::Set_Address_Family(
+    Server_Socket::ADDRESS_FAMILY family)
+{
+    if (server_socket.Is_Open())
+    {
+        cerr << "Network_Server::Set_Address_Family: "
+                "trying change address family "
+                "with open connection";
+
+        return;
+    }
+
+    server_socket.Set_Address_Family(family);
+}

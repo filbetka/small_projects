@@ -48,6 +48,8 @@ class Network_Server
 
         void Set_Connections_Number(int number);
         void Set_Read_Timeout(int timeout_ms);
+        void Set_Address_Family(
+            Server_Socket::ADDRESS_FAMILY family);
 
 };
 

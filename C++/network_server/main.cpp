@@ -18,6 +18,7 @@ int main()
 {
     // open connection
     Network_Server server(1100);
+    server.Set_Address_Family(Server_Socket::IP_V6);
     server.Server_Open();
     if (not server.Is_Open())
         return 0;
