@@ -1,11 +1,11 @@
 #include <iostream>
-#include "network_client.h"
+#include "network_client/network_client.h"
 
 
 int main()
 {
     // open connection
-    Network_Client client("::1", 1100);
+    Network_Client client("127.0.0.1", 1100);
     client.Set_Read_Timeout(3000);
     client.Connection_Open();
     if (not client.Is_Connected())

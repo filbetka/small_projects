@@ -1,7 +1,7 @@
 #ifndef NETWORK_CLIENT_H
 #define NETWORK_CLIENT_H
 
-#include "client_socket.h"
+#include "socket/client_socket.h"
 
 
 class Network_Client
