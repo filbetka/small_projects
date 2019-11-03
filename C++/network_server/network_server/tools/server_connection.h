@@ -11,6 +11,7 @@ class Server_Connection
     public:
 
         explicit Server_Connection(int connection);
+        ~Server_Connection();
 
     private:
 

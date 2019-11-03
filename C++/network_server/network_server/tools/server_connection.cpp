@@ -3,17 +3,20 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <cerrno>
 
 /**
  * @class Server_Connection
- * @details
+ * @details Client connections for server.
+ * The object contains all information about
+ * connection and provides API to service.
+ */
+
+/**
+ * @brief Server_Connection::Server_Connection
+ * @param connection - client connection number.
  */
 
 Server_Connection::Server_Connection(int connection)
@@ -28,6 +31,17 @@ Server_Connection::Server_Connection(int connection)
         is_connected = false;
 }
 
+Server_Connection::~Server_Connection()
+{
+    if (this->Is_Connected())
+        this->Disconnect();
+}
+
+/**
+ * @details Server_Connection::Validate
+ * @return if connection is active.
+ */
+
 bool Server_Connection::Validate() const
 {
     return server_connection != -1;
@@ -35,7 +49,7 @@ bool Server_Connection::Validate() const
 
 /**
  * @brief Server_Connection::Disconnect
- * @details
+ * @details Close client connection.
  */
 
 void Server_Connection::Disconnect()
@@ -45,6 +59,8 @@ void Server_Connection::Disconnect()
         cerr << "Server_Connection::Disconnect: "
                 "bad connection number\n";
 
+        server_connection = -1;
+        is_connected = false;
         return;
     }
 
@@ -63,10 +79,20 @@ void Server_Connection::Disconnect()
     is_connected = false;
 }
 
+/**
+ * @brief Server_Connection::Is_Connected
+ * @return if the connection is enable.
+ */
+
 bool Server_Connection::Is_Connected()
 {
     return is_connected;
 }
+
+/**
+ * @brief Server_Connection::Client_Address
+ * @return client IP address as string.
+ */
 
 string Server_Connection::Client_Address()
 {
@@ -76,7 +102,7 @@ string Server_Connection::Client_Address()
 /**
  * @brief Server_Connection::Write
  * @param data - data to write
- * @details Write data to client
+ * @details Write data to client.
  */
 
 void Server_Connection::Write(const string& data)
@@ -109,10 +135,8 @@ void Server_Connection::Write(const string& data)
 
 /**
  * @brief Server_Connection::Read
- * @param bytes_number - number of bytes for read
+ * @details Read data from client.
  * @return read bytes as string
- * @details Read data from client in the number of bytes
- * specified in the parameter
  */
 
 string Server_Connection::Read()
@@ -179,7 +203,7 @@ string Server_Connection::Read()
  * @brief Server_Connection::Write
  * @param data - data to write
  * @param size - size of data
- * @details Write data to client
+ * @details Write data to client.
  */
 
 void Server_Connection::Write(char* data, size_t size)
@@ -211,8 +235,9 @@ void Server_Connection::Write(char* data, size_t size)
 
 /**
  * @brief Server_Connection::Read
- * @param buffer
- * @param size
+ * @param buffer - container for red data
+ * @param size - how much you want read
+ * @details Read data from client.
  */
 
 void Server_Connection::Read(char* buffer, size_t size)
