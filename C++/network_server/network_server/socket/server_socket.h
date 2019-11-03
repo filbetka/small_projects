@@ -31,7 +31,7 @@ class Server_Socket
         int connections_number;
         ADDRESS_FAMILY family;
 
-    public:
+    private:
 
         bool Create_Socket();
         bool Reuse_Address();
@@ -40,6 +40,11 @@ class Server_Socket
         bool Bind_Socket_IPv6();
         bool Set_Keep_Alive();
         bool Set_Listen_Socket();
+
+        Server_Connection* Accept_IPv4() const;
+        Server_Connection* Accept_IPv6() const;
+
+    public:
 
         // connection
         bool Server_Open();

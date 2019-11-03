@@ -191,6 +191,76 @@ bool Server_Socket::Set_Listen_Socket()
     return true;
 }
 
+Server_Connection* Server_Socket::Accept_IPv4() const
+{
+    sockaddr_in client = {};
+    int length = sizeof(sockaddr_in);
+
+    // accept client
+    int new_connect = accept(
+        server_socket,
+        (sockaddr*) &client,
+        (socklen_t*) &length);
+
+    // error accept
+    if (new_connect < 0)
+    {
+        cerr << "Server_Socket::Connection_Accept: "
+                "Accept failed\n";
+
+        close(new_connect);
+        return nullptr;
+    }
+
+    // show information about accept
+    cout << "\nNew client with IP: ";
+    cout << inet_ntoa(client.sin_addr);
+    cout << endl;
+
+    // create connection object
+    auto connection = new Server_Connection(new_connect);
+    connection->Set_Client_Address(
+        inet_ntoa(client.sin_addr));
+
+    return connection;
+}
+
+Server_Connection* Server_Socket::Accept_IPv6() const
+{
+    sockaddr_in6 client = {};
+    int length = sizeof(sockaddr_in6);
+
+    // accept client
+    int new_connect = accept(
+        server_socket,
+        (sockaddr*) &client,
+        (socklen_t*) &length);
+
+    // error accept
+    if (new_connect < 0)
+    {
+        cerr << "Server_Socket::Connection_Accept: "
+                "Accept failed\n";
+
+        close(new_connect);
+        return nullptr;
+    }
+
+    char ip_address[INET6_ADDRSTRLEN];
+    inet_ntop(AF_INET6, &client.sin6_addr,
+        ip_address, INET6_ADDRSTRLEN);
+
+    // show information about accept
+    cout << "\nNew client with IP: ";
+    cout << ip_address;
+    cout << endl;
+
+    // create connection object
+    auto connection = new Server_Connection(new_connect);
+    connection->Set_Client_Address(ip_address);
+    return connection;
+}
+
 /**
  * @brief Server_Socket::Server_Open
  * @return if open was succeed
@@ -247,36 +317,10 @@ void Server_Socket::Server_Close()
 
 Server_Connection* Server_Socket::Connection_Accept() const
 {
-    sockaddr_in client = {};
-    int length = sizeof(sockaddr_in);
+    if (this->Is_IPv6())
+        return this->Accept_IPv6();
 
-    // accept client
-    int new_connect = accept(
-        server_socket,
-        (sockaddr*) &client,
-        (socklen_t*) &length);
-
-    // error accept
-    if (new_connect < 0)
-    {
-        cerr << "Server_Socket::Connection_Accept: "
-                "Accept failed\n";
-
-        close(new_connect);
-        return nullptr;
-    }
-
-    // show information about accept
-    cout << "\nNew client with IP: ";
-    cout << inet_ntoa(client.sin_addr);
-    cout << endl;
-
-    // create connection object
-    auto connection = new Server_Connection(new_connect);
-    connection->Set_Client_Address(
-        inet_ntoa(client.sin_addr));
-
-    return connection;
+    return this->Accept_IPv4();
 }
 
 /**
