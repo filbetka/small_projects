@@ -34,7 +34,7 @@ bool Server_Socket::Create_Socket()
 {
     // create socket
     server_socket = socket(
-        PF_INET,
+        this->C_Address_Family(),
         SOCK_STREAM,
         0);
 
@@ -94,7 +94,7 @@ bool Server_Socket::Reuse_Port()
     return true;
 }
 
-bool Server_Socket::Bind_Socket()
+bool Server_Socket::Bind_Socket_IPv4()
 {
     // set socked data
     sockaddr_in socket_data = {};
@@ -102,6 +102,33 @@ bool Server_Socket::Bind_Socket()
     socket_data.sin_family = AF_INET;
     socket_data.sin_port = htons(server_port);
     socket_data.sin_addr.s_addr = INADDR_ANY;
+
+    int status = bind(
+        server_socket,
+        (sockaddr*) &socket_data,
+        sizeof(socket_data));
+
+    // error set socked data
+    if (status < 0)
+    {
+        cerr << "Server_Socket::Bind_Socket: "
+                "bind socket failed\n";
+
+        close(server_socket);
+        return false;
+    }
+
+    return true;
+}
+
+bool Server_Socket::Bind_Socket_IPv6()
+{
+    // set socked data
+    sockaddr_in6 socket_data = {};
+    memset(&socket_data, 0, sizeof(socket_data));
+    socket_data.sin6_family = AF_INET6;
+    socket_data.sin6_port = htons(server_port);
+    socket_data.sin6_addr = in6addr_any;
 
     int status = bind(
         server_socket,
@@ -177,7 +204,19 @@ bool Server_Socket::Server_Open()
     if (not this->Create_Socket()) return false;
     if (not this->Reuse_Address()) return false;
     if (not this->Reuse_Port()) return false;
-    if (not this->Bind_Socket()) return false;
+
+    if (this->Is_IPv6())
+    {
+        if (not this->Bind_Socket_IPv6())
+            return false;
+    }
+
+    else
+    {
+        if (not this->Bind_Socket_IPv4())
+            return false;
+    }
+
     if (not this->Set_Keep_Alive()) return false;
     if (not this->Set_Listen_Socket()) return false;
 
@@ -275,4 +314,12 @@ bool Server_Socket::Is_IPv6() const
 bool Server_Socket::Is_Open() const
 {
     return is_open;
+}
+
+int Server_Socket::C_Address_Family() const
+{
+    if (this->Is_IPv6())
+        return PF_INET6;
+
+    return PF_INET;
 }

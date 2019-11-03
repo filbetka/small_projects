@@ -36,7 +36,8 @@ class Server_Socket
         bool Create_Socket();
         bool Reuse_Address();
         bool Reuse_Port();
-        bool Bind_Socket();
+        bool Bind_Socket_IPv4();
+        bool Bind_Socket_IPv6();
         bool Set_Keep_Alive();
         bool Set_Listen_Socket();
 
@@ -52,6 +53,7 @@ class Server_Socket
         bool Is_IPv4() const;
         bool Is_IPv6() const;
         bool Is_Open() const;
+        int C_Address_Family() const;
 
 };
 
