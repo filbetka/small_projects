@@ -3,8 +3,15 @@
 
 /**
  * @class Network_Server
- * @details The class create network server
- * for selected port.
+ * @details The class is network TCP/IP server.
+ * It provides API for accepts new client connections
+ * also in another thread.
+ */
+
+/**
+ * @brief Network_Server::Network_Server
+ * @param port - server port where
+ * server will be available.
  */
 
 Network_Server::Network_Server(int port):
@@ -27,7 +34,7 @@ bool Network_Server::Server_Open()
 
 /**
  * @brief Network_Server::Server_Close
- * @details Close connection and socket
+ * @details Close connections and socket
  */
 
 void Network_Server::Server_Close()
@@ -43,10 +50,21 @@ void Network_Server::Server_Close()
     listener.Join();
 }
 
+/**
+ * @brief Network_Server::Is_Open
+ * @return If server socket is opened.
+ */
+
 bool Network_Server::Is_Open() const
 {
     return server_socket.Is_Open();
 }
+
+/**
+ * @brief Network_Server::Connection_Accept
+ * @param async - if accept connection asynchronously
+ * @details Waiting and accept new client connection.
+ */
 
 void Network_Server::Connection_Accept(bool async)
 {
@@ -78,6 +96,15 @@ void Network_Server::Connection_Accept(bool async)
     }
 }
 
+/**
+ * @brief Network_Server::Waiting_For_Accept
+ * @param ms - milliseconds
+ * @details It's for async accept method
+ * (Network_Server::Connection_Accept(true)).
+ * The method waiting with checking if
+ * new connection came and accept that.
+ */
+
 void Network_Server::Waiting_For_Accept(int ms)
 {
     while (ms > 0)
@@ -105,7 +132,16 @@ void Network_Server::Waiting_For_Accept(int ms)
     }
 }
 
-bool Network_Server::Waiting_Completed()
+/**
+ * @details Network_Server::Accept_Listener_Finished
+ * @details It's for async accept method
+ * (Network_Server::Connection_Accept(true)).
+ * The method check if accept listener finished
+ * and save the connection to connections list.
+ * @return if accept listener finished.
+ */
+
+bool Network_Server::Accept_Listener_Finished()
 {
     if (not listener.Is_Empty())
     {
@@ -125,19 +161,10 @@ bool Network_Server::Waiting_Completed()
     return not listener.Is_Running();
 }
 
-Server_Connection* Network_Server
-    ::Connection(int number) const
-{
-    if (connections.size() <= number)
-    {
-        cerr << "Network_Server::Connection: "
-                "the connection not exists";
-
-        return nullptr;
-    }
-
-    return connections[number];
-}
+/**
+ * @brief Network_Server::Connections
+ * @return list of client connections.
+ */
 
 Connections_List Network_Server::Connections()
 {
@@ -152,6 +179,25 @@ Connections_List Network_Server::Connections()
 
     connections = active;
     return connections;
+}
+
+/**
+ * @brief Network_Server::Connection
+ * @param ip - client ip address
+ * @return connection object with the ip address.
+ */
+
+Server_Connection* Network_Server
+    ::Connection(const string& ip) const
+{
+    for (auto connection : connections)
+        if (connection->Client_Address() == ip)
+            return connection;
+
+    cerr << "Network_Server::Connection: "
+            "no one connection with ip\n";
+
+    return nullptr;
 }
 
 /**
@@ -188,6 +234,11 @@ void Network_Server::Set_Read_Timeout(int timeout_ms)
 
     read_timeout_ms = timeout_ms;
 }
+
+/**
+ * @brief Network_Server::Set_Address_Family
+ * @param family - server address family (IPv4, IPv6).
+ */
 
 void Network_Server::Set_Address_Family(
     Server_Socket::ADDRESS_FAMILY family)

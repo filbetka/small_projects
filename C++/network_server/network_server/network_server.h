@@ -39,10 +39,11 @@ class Network_Server
         // management
         void Connection_Accept(bool async);
         void Waiting_For_Accept(int ms);
-        bool Waiting_Completed();
+        bool Accept_Listener_Finished();
 
-        Server_Connection* Connection(int number) const;
         Connections_List Connections();
+        Server_Connection* Connection(
+            const string& ip) const;
 
     public:
 

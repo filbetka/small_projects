@@ -2,6 +2,13 @@
 #include <algorithm>
 #include "network_server/network_server.h"
 
+/**
+ * @brief Remove_Char
+ * @param data - text to modify
+ * @param to_remove - character to remove
+ * @details Remove character from string.
+ */
+
 void Remove_Char(string& data, char to_remove)
 {
     data.erase(
@@ -28,7 +35,7 @@ int main()
 
     while (working)
     {
-        if (server.Waiting_Completed())
+        if (server.Accept_Listener_Finished())
             server.Connection_Accept(true);
 
         server.Waiting_For_Accept(0);
