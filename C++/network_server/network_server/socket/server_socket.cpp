@@ -13,6 +13,12 @@
  * for selected port.
  */
 
+/**
+ * @brief Server_Socket::Server_Socket
+ * @param port - server port where
+ * server will be available.
+ */
+
 Server_Socket::Server_Socket(int port)
 {
     // set values
@@ -29,6 +35,12 @@ Server_Socket::~Server_Socket()
     if (this->Is_Open())
         this->Server_Close();
 }
+
+/**
+ * @brief Server_Socket::Create_Socket
+ * @details Create and validate socket.
+ * @return if successful
+ */
 
 bool Server_Socket::Create_Socket()
 {
@@ -49,6 +61,12 @@ bool Server_Socket::Create_Socket()
 
     return true;
 }
+
+/**
+ * @brief Server_Socket::Reuse_Address
+ * @details Set and validate reuse address option.
+ * @return if successful
+ */
 
 bool Server_Socket::Reuse_Address()
 {
@@ -72,6 +90,12 @@ bool Server_Socket::Reuse_Address()
     return true;
 }
 
+/**
+ * @brief Server_Socket::Reuse_Port
+ * @details Set and validate reuse port option.
+ * @return if successful
+ */
+
 bool Server_Socket::Reuse_Port()
 {
     int enable = 1;
@@ -93,6 +117,12 @@ bool Server_Socket::Reuse_Port()
 
     return true;
 }
+
+/**
+ * @brief Server_Socket::Bind_Socket_IPv4
+ * @details Bind server data to socket for IPv4.
+ * @return if successful
+ */
 
 bool Server_Socket::Bind_Socket_IPv4()
 {
@@ -121,6 +151,12 @@ bool Server_Socket::Bind_Socket_IPv4()
     return true;
 }
 
+/**
+ * @brief Server_Socket::Bind_Socket_IPv6
+ * @details Bind server data to socket for IPv6.
+ * @return if successful
+ */
+
 bool Server_Socket::Bind_Socket_IPv6()
 {
     // set socked data
@@ -148,6 +184,12 @@ bool Server_Socket::Bind_Socket_IPv6()
     return true;
 }
 
+/**
+ * @brief Server_Socket::Set_Keep_Alive
+ * @details Set keep alive option to socket.
+ * @return if successful
+ */
+
 bool Server_Socket::Set_Keep_Alive()
 {
     // set the option active
@@ -172,6 +214,12 @@ bool Server_Socket::Set_Keep_Alive()
     return true;
 }
 
+/**
+ * @brief Server_Socket::Set_Listen_Socket
+ * @details Enable listen clients queue.
+ * @return if successful
+ */
+
 bool Server_Socket::Set_Listen_Socket()
 {
     // enable listen
@@ -190,6 +238,13 @@ bool Server_Socket::Set_Listen_Socket()
 
     return true;
 }
+
+/**
+ * @brief Server_Socket::Accept_IPv4
+ * @details Accept and display information
+ * about new client that connected to server.
+ * @return server connection object
+ */
 
 Server_Connection* Server_Socket::Accept_IPv4() const
 {
@@ -224,6 +279,13 @@ Server_Connection* Server_Socket::Accept_IPv4() const
 
     return connection;
 }
+
+/**
+ * @brief Server_Socket::Accept_IPv6
+ * @details Accept and display information
+ * about new client that connected to server.
+ * @return server connection object
+ */
 
 Server_Connection* Server_Socket::Accept_IPv6() const
 {
@@ -263,6 +325,7 @@ Server_Connection* Server_Socket::Accept_IPv6() const
 
 /**
  * @brief Server_Socket::Server_Open
+ * @details Make all operations to open server.
  * @return if open was succeed
  */
 
@@ -312,7 +375,7 @@ void Server_Socket::Server_Close()
 /**
  * @brief Server_Socket::Connection_Accept
  * @details Accept new connections
- * @return connection for service
+ * @return connection object for service
  */
 
 Server_Connection* Server_Socket::Connection_Accept() const
@@ -335,15 +398,30 @@ void Server_Socket::Set_Connections_Number(int number)
     connections_number = number;
 }
 
+/**
+ * @brief Server_Socket::Set_Address_Family
+ * @param _family - address family (IPv4, IPv6)
+ */
+
 void Server_Socket::Set_Address_Family(ADDRESS_FAMILY _family)
 {
     family = _family;
 }
 
+/**
+ * @brief Server_Socket::Is_IPv4
+ * @return if family address is IPv4
+ */
+
 bool Server_Socket::Is_IPv4() const
 {
     return family == IP_V4;
 }
+
+/**
+ * @brief Server_Socket::Is_IPv6
+ * @return if family address is IPv6
+ */
 
 bool Server_Socket::Is_IPv6() const
 {
@@ -359,6 +437,11 @@ bool Server_Socket::Is_Open() const
 {
     return is_open;
 }
+
+/**
+ * @brief Server_Socket::C_Address_Family
+ * @return Linux C macro value for address family.
+ */
 
 int Server_Socket::C_Address_Family() const
 {
