@@ -8,7 +8,7 @@
 	
 		\subsection step1 Step 1: Install tools
 		Requiremnet tools:
-		* cmake 3.13
+		* cmake 3.14
 		* gcc GNU 7.4.0
 		* g++ GNU 7.4.0
 		
