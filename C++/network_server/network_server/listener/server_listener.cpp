@@ -82,8 +82,8 @@ bool Server_Listener::Is_Empty() const
  * @return new accepted connection.
  */
 
-Server_Connection* Server_Listener
-    ::Accepted_Connection() const
+auto Server_Listener::Accepted_Connection() const
+        -> Server_Connection*
 {
     return accepted;
 }

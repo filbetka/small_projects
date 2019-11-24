@@ -84,7 +84,7 @@ void Server_Connection::Disconnect()
  * @return if the connection is enable.
  */
 
-bool Server_Connection::Is_Connected()
+bool Server_Connection::Is_Connected() const
 {
     return is_connected;
 }
@@ -94,7 +94,7 @@ bool Server_Connection::Is_Connected()
  * @return client IP address as string.
  */
 
-string Server_Connection::Client_Address()
+auto Server_Connection::Client_Address() -> string
 {
     return server_address;
 }
@@ -139,7 +139,7 @@ void Server_Connection::Write(const string& data)
  * @return read bytes as string
  */
 
-string Server_Connection::Read()
+auto Server_Connection::Read() -> string
 {
     if (not this->Validate())
     {

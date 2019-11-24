@@ -18,6 +18,7 @@ class Server_Socket
     public:
 
         explicit Server_Socket(int port);
+        Server_Socket(const Server_Socket&) = delete;
         ~Server_Socket();
 
     private:
@@ -41,15 +42,16 @@ class Server_Socket
         bool Set_Keep_Alive();
         bool Set_Listen_Socket();
 
-        Server_Connection* Accept_IPv4() const;
-        Server_Connection* Accept_IPv6() const;
+        auto Accept_IPv4() const -> Server_Connection*;
+        auto Accept_IPv6() const -> Server_Connection*;
 
     public:
 
         // connection
         bool Server_Open();
         void Server_Close();
-        Server_Connection* Connection_Accept() const;
+        auto Connection_Accept() const
+                -> Server_Connection*;
 
     public:
 

@@ -15,6 +15,7 @@ class Network_Server
     public:
 
         explicit Network_Server(int port=1100);
+        Network_Server(const Network_Server&) = delete;
 
     private:
 

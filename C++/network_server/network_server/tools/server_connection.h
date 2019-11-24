@@ -11,6 +11,7 @@ class Server_Connection
     public:
 
         explicit Server_Connection(int connection);
+        Server_Connection(const Server_Connection&) = delete;
         ~Server_Connection();
 
     private:
@@ -29,15 +30,15 @@ class Server_Connection
     public:
 
         void Write(const string& data);
-        string Read();
+        auto Read() -> string;
 
         void Write(char* data, size_t size);
         void Read(char* buffer, size_t size);
 
     public:
 
-        bool Is_Connected();
-        string Client_Address();
+        bool Is_Connected() const;
+        auto Client_Address() -> string;
 
         void Set_Read_Timeout(int timeout_ms);
         void Set_Client_Address(string address);

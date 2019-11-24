@@ -246,7 +246,8 @@ bool Server_Socket::Set_Listen_Socket()
  * @return server connection object
  */
 
-Server_Connection* Server_Socket::Accept_IPv4() const
+auto Server_Socket::Accept_IPv4() const
+        -> Server_Connection*
 {
     sockaddr_in client = {};
     int length = sizeof(sockaddr_in);
@@ -287,7 +288,8 @@ Server_Connection* Server_Socket::Accept_IPv4() const
  * @return server connection object
  */
 
-Server_Connection* Server_Socket::Accept_IPv6() const
+auto Server_Socket::Accept_IPv6() const
+        -> Server_Connection*
 {
     sockaddr_in6 client = {};
     int length = sizeof(sockaddr_in6);
@@ -378,7 +380,8 @@ void Server_Socket::Server_Close()
  * @return connection object for service
  */
 
-Server_Connection* Server_Socket::Connection_Accept() const
+auto Server_Socket::Connection_Accept() const
+        -> Server_Connection*
 {
     if (this->Is_IPv6())
         return this->Accept_IPv6();

@@ -13,6 +13,10 @@ class Server_Listener
         explicit Server_Listener(
             Server_Socket& socket);
 
+        Server_Listener(
+            const Server_Listener&)
+                = delete;
+
     private:
 
         Server_Socket& server_socket;
@@ -28,7 +32,9 @@ class Server_Listener
         void Join();
         void Clear();
 
-        Server_Connection* Accepted_Connection() const;
+        auto Accepted_Connection() const
+                -> Server_Connection*;
+
         bool Is_Running() const;
         bool Is_Empty() const;
 
