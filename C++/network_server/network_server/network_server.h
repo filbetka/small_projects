@@ -41,9 +41,9 @@ class Network_Server
         void Waiting_For_Accept(int ms);
         bool Accept_Listener_Finished();
 
-        Connections_List Connections();
-        Server_Connection* Connection(
-            const string& ip) const;
+        auto Connections() -> Connections_List;
+        auto Connection(const string& ip) const
+                -> Server_Connection*;
 
     public:
 

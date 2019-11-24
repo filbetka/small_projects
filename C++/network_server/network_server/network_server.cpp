@@ -166,7 +166,7 @@ bool Network_Server::Accept_Listener_Finished()
  * @return list of client connections.
  */
 
-Connections_List Network_Server::Connections()
+auto Network_Server::Connections() -> Connections_List
 {
     Connections_List active;
     for (auto connection : connections)
@@ -187,8 +187,8 @@ Connections_List Network_Server::Connections()
  * @return connection object with the ip address.
  */
 
-Server_Connection* Network_Server
-    ::Connection(const string& ip) const
+auto Network_Server::Connection(const string& ip) const
+        -> Server_Connection*
 {
     for (auto connection : connections)
         if (connection->Client_Address() == ip)
