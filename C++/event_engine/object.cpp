@@ -1,9 +1,21 @@
 #include "object.h"
 #include "events.h"
+#include <algorithm>
 
 
 Object::Object()
 {
+}
+
+void Object::Signal_Done(int signal)
+{
+    auto index = find(signals.begin(),
+        signals.end(), signal);
+
+    if (index != signals.end())
+    {
+        signals.erase(index);
+    }
 }
 
 void Object::Signal(int type)
@@ -16,8 +28,8 @@ void Object::Slots(int slot)
 }
 
 void Object::Connect(
-    const Object* sender, int signal,
-    const Object* receiver, int slot)
+    Object* sender, int signal,
+    Object* receiver, int slot)
 {
     Events::Get_Instance()
         ->Add_Connection(

@@ -2,8 +2,8 @@
 
 
 Connection::Connection(
-    const Object* _sender, int _signal,
-    const Object* _receiver, int _slot):
+    Object* _sender, int _signal,
+    Object* _receiver, int _slot):
         sender(_sender), signal(_signal),
         receiver(_receiver), slot(_slot)
 {

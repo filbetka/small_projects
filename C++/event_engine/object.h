@@ -16,13 +16,17 @@ class Object
 
         list<int> signals;
 
+    private:
+
+        void Signal_Done(int signal);
+
     public:
 
         virtual void Signal(int type);
         virtual void Slots(int slot);
         static void Connect(
-            const Object* sender, int signal,
-            const Object* receiver, int slot);
+            Object* sender, int signal,
+            Object* receiver, int slot);
 
     friend class Engine;
 

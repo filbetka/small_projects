@@ -15,6 +15,11 @@ class Engine
 
         bool is_active;
 
+    private:
+
+        bool Have_Signal(const Object* obj, int signal);
+        int Count_Signals(const Object* obj, int signal);
+
     public:
 
         void Close();

@@ -8,16 +8,16 @@ struct Connection
 {
 
     // variables
-    const Object* sender;
-    const Object* receiver;
+    Object* sender;
+    Object* receiver;
 
     int signal;
     int slot;
 
     // help methods
     Connection(
-        const Object* sender, int signal,
-        const Object* receiver, int slot);
+        Object* sender, int signal,
+        Object* receiver, int slot);
 
     bool operator == (const Connection& connection);
 
