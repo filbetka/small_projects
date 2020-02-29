@@ -4,22 +4,19 @@ const tools = require('./validate-tools');
 module.exports =
     {
         validateUserPostRequest: function (json) {
-            if (tools.isNotEmail(json['user'])) return false;
-            if (tools.isShorter(json['password'], 8)) return false;
-            if (tools.hasNotNumber(json['password'])) return false;
-            if (tools.isNullOrEmpty(json['teamName'])) return false;
-            if (tools.isNullOrEmpty(json['eventId'])) return false;
-            return true;
+            if (tools.isNotEmail(json.user)) throw 'user field is not email';
+            if (tools.isShorter(json.password, 8)) throw 'password is too short';
+            if (tools.hasNotNumber(json.password)) throw 'password has not number';
+            if (tools.isNullOrEmpty(json.teamName)) throw 'teamName is null or empty';
+            if (tools.isNullOrEmpty(json.eventId)) throw 'eventId is null or empty';
         },
 
         validateUserRemindPostRequest: function (json) {
-            if (tools.isNotEmail(json['user'])) return false;
-            return true;
+            if (tools.isNotEmail(json.user)) throw 'user field is not email';
         },
 
         validateUserRemindPutRequest: function (json) {
-            if (tools.isShorter(json['password'], 8)) return false;
-            if (tools.hasNotNumber(json['password'])) return false;
-            return true;
+            if (tools.isShorter(json.password, 8)) throw 'password is too short';
+            if (tools.hasNotNumber(json.password)) throw 'password has not number';
         },
     };

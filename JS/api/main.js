@@ -7,8 +7,11 @@ for (const test in tests) {
     try { success = tests[test](); }
 
     catch (exception) {
-        console.log(exception);
-        console.error("test not pass: " + test);
+        console.error(
+            "test not pass: " + test +
+            ": \t" + exception);
+
+        continue;
     }
 
     if (!success) {
