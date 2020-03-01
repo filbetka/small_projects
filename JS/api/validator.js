@@ -19,4 +19,10 @@ module.exports =
             if (tools.isShorter(json.password, 8)) throw 'password is too short';
             if (tools.hasNotNumber(json.password)) throw 'password has not number';
         },
+
+        validateUserLoginPostRequest: function (json) {
+            if (tools.isNotEmail(json.user)) throw 'user field is not email';
+            if (tools.isShorter(json.password, 8)) throw 'password is too short';
+            if (tools.hasNotNumber(json.password)) throw 'password has not number';
+        },
     };

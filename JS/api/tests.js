@@ -178,9 +178,64 @@ module.exports =
          */
 
         _user_login__post__positive: function () {
+            validator.validateUserLoginPostRequest({
+                user: 'example@example.com', // email is user name
+                password: 'examplePassword1', // 8 characters+, one alphanumeric
+            });
+
+            return true;
+        },
+
+        _user_login__post__bad_user: function () {
+            try {
+                validator.validateUserLoginPostRequest({
+                    user: '123example.com', // email is user name
+                    password: 'examplePassword1', // 8 characters+, one alphanumeric
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'user field is not email')
+                    return true;
+            }
+
+            return false;
+        },
+
+        _user_login__post__password_without_number: function () {
+            try {
+                validator.validateUserLoginPostRequest({
+                    user: 'example@example.com', // email is user name
+                    password: 'examplePassword', // 8 characters+, one alphanumeric
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'password has not number')
+                    return true;
+            }
+
+            return false;
+        },
+
+        _user_login__post__password_too_short: function () {
+            try {
+                validator.validateUserLoginPostRequest({
+                    user: 'example@example.com', // email is user name
+                    password: 'exa1', // 8 characters+, one alphanumeric
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'password is too short')
+                    return true;
+            }
+
+            return false;
         },
 
         _user_login__delete__positive: function () {
+            return true;
         },
 
         /**
