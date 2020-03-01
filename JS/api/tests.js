@@ -120,12 +120,57 @@ module.exports =
             return true;
         },
 
+        _user_remind__post__bad_user: function () {
+            try {
+                validator.validateUserRemindPostRequest({
+                    user: '123example.com', // email is user name
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'user field is not email')
+                    return true;
+            }
+
+            return false;
+        },
+
         _user_remind__put__positive: function () {
             validator.validateUserRemindPutRequest({
                 password: 'examplePassword1', // 8 characters+, one alphanumeric
             });
 
             return true;
+        },
+
+        _user_remind__put__password_without_number: function () {
+            try {
+                validator.validateUserRemindPutRequest({
+                    password: 'examplePassword', // 8 characters+, one alphanumeric
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'password has not number')
+                    return true;
+            }
+
+            return false;
+        },
+
+        _user_remind__put__password_too_short: function () {
+            try {
+                validator.validateUserRemindPutRequest({
+                    password: 'exa1', // 8 characters+, one alphanumeric
+                });
+            }
+
+            catch (exception) {
+                if (exception === 'password is too short')
+                    return true;
+            }
+
+            return false;
         },
 
         /**
