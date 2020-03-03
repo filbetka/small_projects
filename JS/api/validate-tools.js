@@ -36,6 +36,22 @@ class ValidateTools {
     isNullOrEmpty(data) {
         return data === '';
     }
+
+    inRange(value, start, end) {
+        return value >= start && value <= end;
+    }
+
+    inNotRange(value, start, end) {
+        return !this.inRange(value, start, end);
+    }
+
+    contain(value, array) {
+        return array.includes(value);
+    }
+
+    notContain(value, array) {
+        return !this.contain(value, array);
+    }
 }
 
 // export
