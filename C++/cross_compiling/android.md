@@ -58,6 +58,10 @@ foo@bar:~$ adb shell "/data/local/tmp/a.out"
 SomeName
 ```
 
+#### Others
+Some standard compilation flags does not work in android. 
+RPATH: `-Wl,-rpath=<path>` | `patchelf --set-rpath '/data/local/tmp' a.out`
+
 #### Source pages:
 http://nickdesaulniers.github.io/blog/2016/07/01/android-cli/
 
