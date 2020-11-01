@@ -61,6 +61,7 @@ SomeName
 #### Others
 Some standard compilation flags does not work in android. 
 RPATH: `-Wl,-rpath=<path>` | `patchelf --set-rpath '/data/local/tmp' a.out`
+STDC++: you must compile application with flags `-static-libgcc -static-libstdc++`
 
 #### Source pages:
 http://nickdesaulniers.github.io/blog/2016/07/01/android-cli/
