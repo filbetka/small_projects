@@ -2,3 +2,4 @@
 *venv*
 *.idea*
 build/*
+QML/drag_and_drop/build/*

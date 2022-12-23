@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "FusionGUI",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/out/FusionGUI.exe",
+            "args": [
+                "2>",
+                "nil"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/out/",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "C:/Qt/5.15.2/msvc2019_64/bin;${env:PATH}"
+                }
+            ],
+            "console": "integratedTerminal",
+            "logging": {
+                "moduleLoad": false,
+            },
+            "visualizerFile": "C:/Users/mbroda/AppData/Roaming/Code/User/workspaceStorage/9e4e73c1e80196e1a7a4bfa7c4ff6bdf/tonka3000.qtvsctools/qt.natvis.xml"
+        }
+    ]
+}
