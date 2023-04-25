@@ -1,0 +1,55 @@
+FROM debian:11.6
+
+# create new user
+RUN apt-get update && \
+      apt-get -y install sudo
+
+RUN adduser --disabled-password --gecos '' user
+RUN adduser user sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER user
+
+# install Qt dependencies
+RUN sudo apt-get install -y make build-essential libclang-dev ninja-build gcc git bison python3 gperf pkg-config libfontconfig1-dev libfreetype6-dev libx11-dev libx11-xcb-dev libxext-dev libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libxcb-glx0-dev libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev libdouble-conversion-dev
+RUN sudo apt-get install -y bison gperf flex python2 libasound2-dev libcups2-dev libdrm-dev libegl1-mesa-dev libnss3-dev libpci-dev libpulse-dev libudev-dev nodejs libxtst-dev gyp ninja-build
+RUN sudo apt-get install -y libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libfontconfig1-dev libxss-dev libwebp-dev libjsoncpp-dev libopus-dev libminizip-dev libavutil-dev libavformat-dev libavcodec-dev libevent-dev libvpx-dev libsnappy-dev libre2-dev libprotobuf-dev protobuf-compiler
+
+# install cross-compiler
+RUN sudo apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu clang 
+RUN sudo apt install -y cmake
+
+# unpack Qt and Raspberry PI sysroot
+COPY qt-everywhere-src-6.4.2.tar.xz rpi-sysroot-06022023.tgz rpi-toolchain.cmake /home/user/
+RUN mkdir /home/user/rpi
+RUN tar zxvf /home/user/rpi-sysroot-06022023.tgz -C /home/user/rpi
+RUN tar -xf /home/user/qt-everywhere-src-6.4.2.tar.xz -C /home/user/
+RUN sudo mkdir /opt/Qt && sudo chown user /opt/Qt
+
+# compilation process
+# compile Qt for Linux x64
+RUN mkdir -p /home/user/qt-everywhere-src-6.4.2/build_x64
+WORKDIR /home/user/qt-everywhere-src-6.4.2/build_x64
+
+RUN cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_BUILD_EXAMPLES=OFF -DQT_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/opt/Qt/6.4.2/gcc_64
+RUN cmake --build . -j
+RUN mkdir -p /opt/Qt/6.4.2/gcc_64 && cmake --install .
+
+# compile Qt for RPI
+RUN mkdir -p /home/user/qt-everywhere-src-6.4.2/build_rpi
+WORKDIR /home/user/qt-everywhere-src-6.4.2/build_rpi
+ENV RPI_SYSROOT=/home/user/rpi/rpi-sysroot
+
+RUN cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DINPUT_opengl=es2 -DQT_BUILD_EXAMPLES=OFF -DQT_BUILD_TESTS=OFF -DQT_HOST_PATH=/opt/Qt/6.4.2/gcc_64 -DCMAKE_INSTALL_PREFIX=/opt/Qt/6.4.2/rpi -DCMAKE_TOOLCHAIN_FILE=/home/user/rpi-toolchain.cmake -DQT_QMAKE_TARGET_MKSPEC=devices/linux-rasp-pi4-aarch64 -DQT_FEATURE_xcb=ON -DFEATURE_xcb_xlib=ON -DQT_FEATURE_xlib=ON -DBUILD_qtwebchannel=OFF -DBUILD_qtwebengine=OFF -DQT_FEATURE_opengles2=ON -DQT_FEATURE_opengles3=ON -DQT_FEATURE_eglfs=OFF
+RUN cmake --build . -j
+RUN mkdir -p /opt/Qt/6.4.2/rpi && cmake --install .
+
+# set env variables
+ENV RPI_SYSROOT=/home/user/rpi/rpi-sysroot
+ENV QT_PATH=/opt/Qt
+ENV QT_GCC=/opt/Qt/6.4.2/gcc_64
+ENV QT_RPI=/opt/Qt/6.4.2/rpi
+ENV PATH="/opt/Qt/Tools/CMake/bin:/opt/Qt/Tools/Ninja:/opt/Qt/6.4.2/gcc_64/bin:${PATH}"
+WORKDIR /home/user
+
+# cleaning
+RUN rm -r /home/user/qt-everywhere-src-6.4.2 /home/user/qt-everywhere-src-6.4.2.tar.xz /home/user/rpi-sysroot-06022023.tgz

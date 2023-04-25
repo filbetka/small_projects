@@ -1,0 +1,36 @@
+FROM debian:11.6
+
+# create new user
+RUN apt-get update && \
+    apt-get -y install sudo
+
+RUN adduser --disabled-password --gecos '' user && \
+    adduser user sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    
+USER user
+WORKDIR /home/user
+
+# install Qt dependencies
+RUN sudo apt-get install -y make build-essential libclang-dev ninja-build gcc git bison python3 gperf pkg-config libfontconfig1-dev libfreetype6-dev libx11-dev libx11-xcb-dev libxext-dev libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libxcb-glx0-dev libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev libdouble-conversion-dev bison gperf flex python2 libasound2-dev libcups2-dev libdrm-dev libegl1-mesa-dev libnss3-dev libpci-dev libpulse-dev libudev-dev nodejs libxtst-dev gyp ninja-build libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libfontconfig1-dev libxss-dev libwebp-dev libjsoncpp-dev libopus-dev libminizip-dev libavutil-dev libavformat-dev libavcodec-dev libevent-dev libvpx-dev libsnappy-dev libre2-dev libprotobuf-dev protobuf-compiler gcc-aarch64-linux-gnu g++-aarch64-linux-gnu clang cmake wget
+
+# unpack Qt and Raspberry PI sysroot
+RUN sudo mkdir /opt/Qt && \
+    sudo chown user /opt/Qt && \
+    mkdir /home/user/rpi
+
+# use `python -m http.server 8000` 
+# to share current directory by HTTP
+RUN wget http://192.168.43.169:8000/all.tar.gz && \
+    tar zxvf /home/user/all.tar.gz -C /home/user && \
+    tar zxvf /home/user/rpi-sysroot-06022023.tgz -C /home/user/rpi && \
+    tar zxvf /home/user/Qt.tar.gz -C /opt/Qt && \
+    rm -r /home/user/all.tar.gz /home/user/Qt.tar.gz /home/user/rpi-sysroot-06022023.tgz
+
+# set env variables
+ENV RPI_SYSROOT=/home/user/rpi/rpi-sysroot
+ENV QT_PATH=/opt/Qt
+ENV QT_GCC=/opt/Qt/6.4.2/gcc_64
+ENV QT_RPI=/opt/Qt/6.4.2/rpi
+ENV PATH="/opt/Qt/Tools/CMake/bin:/opt/Qt/Tools/Ninja:/opt/Qt/6.4.2/gcc_64/bin:${PATH}"
+
