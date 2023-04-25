@@ -1,0 +1,26 @@
+- templates
+- lvalue, rvalue
+- auto
+- enum
+- using
+- constexpr
+- lambda
+
+classes:
+- special functions: 
+    * default constructor   no changes
+    * destructor            no changes (is noexcept)
+    * copy constructor      deleted if move operation exists
+    * copy operator         deleted if move operation exists
+    * move constructor      deleted if copy, move, or destructor exists
+    * move operator         deleted if copy, move, or destructor exists
+    
+- operator delete, default 
+- override, final
+- noexcept
+
+smart pointers:
+- unique_ptr
+- auto_ptr
+- shared_ptr
+- weak_ptr
