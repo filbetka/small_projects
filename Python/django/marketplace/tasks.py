@@ -18,3 +18,8 @@ def start(c):
 def run(c):
     venv_run(c, 'python manage.py runserver')
 
+
+@task
+def db(c):
+    venv_run(c, 'python manage.py makemigrations')
+    venv_run(c, 'python manage.py migrate')
