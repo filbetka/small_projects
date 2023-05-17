@@ -1,0 +1,9 @@
+[tool.isort]
+multi_line_output = 3
+line_length = 120
+
+[tool.flake8]
+exclude = '.git, __pycache__, venv'
+max-line-length = 120
+max-complexity = 18
+show-source = true

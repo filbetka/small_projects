@@ -2,3 +2,4 @@ django
 pre-commit
 isort
 flake8
+pyproject-flake8
