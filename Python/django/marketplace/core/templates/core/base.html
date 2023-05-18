@@ -1,0 +1,16 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>{% block title %}Marketplace{% endblock %}</title>
+    </head>
+    <body>
+        {% include 'core/navigation.html' %}
+        {% block content %}
+        {% endblock %}
+        {% include 'core/footer.html' %}
+    </body>
+</html>
