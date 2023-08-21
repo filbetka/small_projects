@@ -1,0 +1,28 @@
+Jak warto przygotować się do rozmowy.
+
+1. Jak działa C++:
+- zabawa z konstruktorami i destruktorami (kaskada przy usuwaniu lub tworzeniu obiektów z dziedziczeniem)
+- metody wirtualne (konstruktory, destruktory, wywołania metod z konstruktorów)
+- szablony
+- nowości i różnice między wersjami
+
+2. STL:
+- kontenery (array, list, forward_list, deque, vector)
+- kontenery asocjacyjne (map, set, multimap, multiset)
+- kontenery hashujące (ordered_<asocjacyjne>)
+- adaptery (queue, priority_queue, stack)
+- iteratory
+- algorytmy
+- memory (smart pointers)
+- wielowątkowość
+
+3. Dobre praktyki i OOP:
+- SOLID
+- wzorce projektowe
+- testowanie (biblioteka "cassert")
+
+4. Qt:
+- QtWidgets (UI module, budowanie z kodu)
+- QML
+
+5. Dodatkowe moduły z C/C++ dodawane do projektu
