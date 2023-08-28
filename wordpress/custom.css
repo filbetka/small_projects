@@ -1,0 +1,36 @@
+.blog_holder article .post_image, .blog_holder article .post_image>a, .blog_holder article .post_image img {
+  margin-bottom: 0px;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.blog_holder.blog_standard_type article:not(.format-audio) .post_image, .blog_holder.blog_standard_type article.format-audio .audio_image {
+  padding: 6px;
+  background-color: #ebebeb;
+  margin-top: 128px;
+  margin-bottom: 32px;
+}
+
+.rt-pagination .pagination-list>.active>a, .rt-pagination .pagination-list>.active>a:focus, .rt-pagination .pagination-list>.active>a:hover, .rt-pagination .pagination-list>.active>span, .rt-pagination .pagination-list>.active>span:focus, .rt-pagination .pagination-list>.active>span:hover {
+  background-color: #d64236;
+  border-color: #d64236;
+}
+
+@media only screen and (max-width: 767px) {
+  h1 {
+    font-size: 30px !important;
+  }
+  h2 {
+    font-size: 28px !important;
+  }
+  .blog_holder.blog_standard_type article:not(.format-audio) .post_image, .blog_holder.blog_standard_type article.format-audio .audio_image {
+    margin-top: 0px;
+  }
+}
+
+.testimonials_holder .testimonial_text {
+  color: #fff !important;
+}
+.testimonials_holder .testimonial_author {
+  color: #fff !important;
+}
