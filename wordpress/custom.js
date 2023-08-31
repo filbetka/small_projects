@@ -25,3 +25,11 @@ for (let i = 0; i < events.length; i++) {
         events[i].insertBefore(text_tag, undefined);
     }
 }
+
+
+const pdfButtons = document.querySelectorAll("div.cta_wrapper > p > a > button");
+for (let i = 0; i < pdfButtons.length; i++) {
+    pdfButtons[i].innerHTML = "Otwórz na cały ekran";
+    pdfButtons[i].className = "qbutton big_large_full_width icon_right";
+}
+

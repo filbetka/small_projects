@@ -34,3 +34,7 @@
 .testimonials_holder .testimonial_author {
   color: #fff !important;
 }
+
+.mptt-shortcode-wrapper .mptt-navigation-tabs {
+  display: none;
+}
