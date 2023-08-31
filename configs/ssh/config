@@ -1,0 +1,17 @@
+#Host 10.253.83.50
+#  HostName 10.253.83.50
+#  User git
+#  IdentityFile ~/.ssh/id_rsa
+#  IdentitiesOnly yes
+
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_github
+  IdentitiesOnly yes
+  
+#Host gitlab.com
+#  HostName gitlab.com
+#  User git
+#  IdentityFile ~/.ssh/id_gitlab
+#  IdentitiesOnly yes
