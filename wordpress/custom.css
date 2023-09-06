@@ -38,3 +38,8 @@
 .mptt-shortcode-wrapper .mptt-navigation-tabs {
   display: none;
 }
+
+.mptt-shortcode-table {
+  border-spacing: 10px !important;
+  border-collapse: separate !important;
+}

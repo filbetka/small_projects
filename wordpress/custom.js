@@ -14,7 +14,7 @@ for (let i = 0; i < events.length; i++) {
         }
         
         date_tag = document.createElement("b");
-        date_tag.innerText = date;
+        date_tag.innerText = date.split(".").reverse().join(".");
         
         text_tag = document.createElement("div");
         text_tag.innerText = text;
