@@ -1,18 +1,18 @@
 $args = array(
     'post_type' => 'post',
     'posts_per_page' => -1,
-	'tax_query' => array(
+    'tax_query' => array(
         array(
             'taxonomy' => 'post_tag',
             'field'    => 'name',
             'terms'    => 'Nadchodzące',
         ),
-		array(
-			'taxonomy' => 'category',
-			'field' => 'name',
-			'terms' => 'Wydarzenia',
-		) ,
-	)
+        array(
+            'taxonomy' => 'category',
+            'field' => 'name',
+            'terms' => 'Wydarzenia',
+        ) ,
+    )
 );
 
 $all_posts = new WP_Query($args);
@@ -28,9 +28,9 @@ if ($all_posts->have_posts()) {
         $current_date = new DateTime();
         
         if ($event_date == false || array_sum($event_date::getLastErrors())) {
-			continue;
-		}
-			
+            continue;
+        }
+
         if ($event_date >= $current_date) {
             continue;
         }
@@ -38,13 +38,12 @@ if ($all_posts->have_posts()) {
         $current_tags = wp_get_post_tags($post_id, array('fields' => 'names'));
         $new_tags = array('Przeszłe');
         
-		$indexToRemove = array_search("Nadchodzące", $current_tags);
-		if ($indexToRemove !== false) {
+        $indexToRemove = array_search("Nadchodzące", $current_tags);
+        if ($indexToRemove !== false) {
             unset($current_tags[$indexToRemove]);
         }
-		
-		$temp = implode(', ', $tags_to_set);
-		echo "<p>tags: $temp</p>";
+
+        $tags_to_set = array_merge($current_tags, $new_tags);
         wp_set_post_tags($post_id, $tags_to_set);
     }
     wp_reset_postdata();
