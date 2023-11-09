@@ -43,3 +43,8 @@
   border-spacing: 10px !important;
   border-collapse: separate !important;
 }
+
+.wpcf7-form > div > p {
+  margin-bottom: 16px !important;
+}
+
